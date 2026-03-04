@@ -1,0 +1,62 @@
+/* Fondo general */
+.contenedor {
+  height: 100vh;
+  background-color: #f2f4f7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta */
+.card {
+  width: 600px;
+  max-width: 90%;
+  background-color: #ffffff;
+  padding: 60px;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Labels */
+label {
+  font-weight: 600;
+  display: block;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 17px;
+  color: #333;
+}
+
+/*Tarjeta2*/
+.card h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+/*  Opciones radio */
+.opciones {
+    display: flex;
+    justify-content: space-around;
+    color: #444;
+    margin: 35px 0;
+    font-size: 16px;
+
+}
+
+/* Inputs */
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  height: 50px;
+  
+ 
+}
+    
+
+
+
+
+
+
+
