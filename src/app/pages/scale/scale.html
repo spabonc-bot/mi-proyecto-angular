@@ -1,1 +1,52 @@
-<p>scale works!</p>
+<div class="container">
+  <h2>Escalas de calificación</h2>
+  
+  <button *ngIf="!mostrarFormulario" class="btn-principal" (click)="abrirFormulario()">+ Agregar Escala</button>
+
+  <div *ngIf="mostrarFormulario" class="formulario-card">
+    <div class="form-grid">
+      <div class="input-group">
+        <label>Nombre de escala</label>
+        <input type="text" [(ngModel)]="nombre" placeholder="Ej: 0 - 5">
+      </div>
+      <div class="input-group">
+        <label>Nota mínima</label>
+        <input type="number" [(ngModel)]="notaMin">
+      </div>
+      <div class="input-group">
+        <label>Nota máxima</label>
+        <input type="number" [(ngModel)]="notaMax">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-guardar" (click)="guardarEscala()">{{ editarEscalaId ? 'Actualizar' : 'Agregar' }}</button>
+      <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Nota Mínima</th>
+          <th>Nota Máxima</th>
+          <th>Gestión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let escala of escalas">
+          <td>{{ escala.id }}</td>
+          <td>{{ escala.nombre }}</td>
+          <td>{{ escala.notaMin }}</td>
+          <td>{{ escala.notaMax }}</td>
+          <td class="acciones">
+            <button class="btn-editar" (click)="editarEscala(escala)">Editar</button>
+            <button class="btn-eliminar" (click)="eliminarEscala(escala.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

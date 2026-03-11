@@ -1,1 +1,52 @@
-<p>results works!</p>
+<div class="container">
+  <div class="header-section">
+    <h2>Resultados</h2>
+    <button class="btn-reporte">Centro de reportes</button>
+  </div>
+
+  <button *ngIf="!mostrarFormulario" class="btn-principal" (click)="abrirFormulario()">+ Agregar Resultado</button>
+
+  <div *ngIf="mostrarFormulario" class="formulario-card">
+    <div class="form-grid">
+      <div class="input-group">
+        <label>Estudiante</label>
+        <input type="text" [(ngModel)]="estudiante">
+      </div>
+      <div class="input-group">
+        <label>Nota</label>
+        <input type="number" [(ngModel)]="nota">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-guardar" (click)="guardarResultado()">Agregar</button>
+      <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="tabla-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Estudiante</th>
+          <th>Nota</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let res of resultados">
+          <td>{{ res.estudiante }}</td>
+          <td>{{ res.nota }}</td>
+          <td>
+            <span class="badge" [ngClass]="res.nota >= 6 ? 'aprobado' : 'reprobado'">
+              {{ res.nota >= 6 ? 'Aprobado' : 'Reprobado' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-editar">Editar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

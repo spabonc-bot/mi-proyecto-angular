@@ -1,0 +1,37 @@
+.container { padding: 30px; background-color: #efe9e9; min-height: 100vh; }
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.btn-reporte {
+  background-color: #3b71ca;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.tabla-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: white;
+}
+
+.aprobado { background-color: #00c853; }
+.reprobado { background-color: #ff5252; }
+
+/* Reutiliza estilos de botones de arriba */
+.btn-principal { background-color: #1a3a5a; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }

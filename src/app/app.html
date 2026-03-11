@@ -1,15 +1,27 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span style="font-size: 40px;">🎓</span>
+    </div>
+    <nav class="menu-nav">
+      <a class="nav-item">Estudiantes</a>
+      <a class="nav-item">Docentes</a>
+      <a class="nav-item">Evaluaciones</a>
+      <a routerLink="/resultados" routerLinkActive="active" class="nav-item">Resultados</a>
+      <a routerLink="/escalas" routerLinkActive="active" class="nav-item">Escalas</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout">Cerrar sesión</button>
+    </div>
+  </aside>
 
-<nav>
-  
-  <a routerLink="inicio">Login</a>
-  <a routerLink="/registro">Registro</a>
-  <a routerLink="/estudiantes">Estudiantes</a>
-  <a routerLink="/docentes">Docentes</a>
-  <a routerLink="/evaluaciones">Evaluaciones</a>
-  <a routerLink="/resultados">Resultados</a>
-  <a routerLink="/escalas">Escalas</a>
-  </ul>
-</nav>
-
-
-<router-outlet></router-outlet>
+  <main class="main-content">
+    <header class="top-header">
+      <h1>Sistema de Evaluación de Exámenes</h1>
+      <div class="header-icons">🔔 👤</div>
+    </header>
+    <section class="content-area">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>
