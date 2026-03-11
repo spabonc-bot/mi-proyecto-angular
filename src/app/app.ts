@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
-  template: `<router-outlet></router-outlet>`,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
-export class App {}
+export class AppComponent { 
+  title = 'mi-proyecto-angular';
+}
