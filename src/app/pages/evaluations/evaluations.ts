@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-evaluations',
   imports: [],
   templateUrl: './evaluations.html',
-  styleUrl: './evaluations.css',
+  styleUrls: ['./evaluations.css']
 })
 export class Evaluations {
 
