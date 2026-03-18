@@ -1,23 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-import { Evaluations } from './evaluations';
+@Component({
+  selector: 'app-evaluations',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './evaluations.html',
+  styleUrl: './evaluations.css'
+})
+export class Evaluations {
 
-describe('Evaluations', () => {
-  let component: Evaluations;
-  let fixture: ComponentFixture<Evaluations>;
+  nombreEvaluacion = "";
+  tipoPreguntas = "";
+  cantidadPreguntas = 0;
+  escalaSeleccionada = "";
+  docenteSeleccionado = "";
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Evaluations]
-    })
-    .compileComponents();
+  crearEvaluacion(){
 
-    fixture = TestBed.createComponent(Evaluations);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
+    console.log("Evaluación creada");
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    console.log("Nombre:", this.nombreEvaluacion);
+    console.log("Tipo:", this.tipoPreguntas);
+    console.log("Cantidad:", this.cantidadPreguntas);
+    console.log("Escala:", this.escalaSeleccionada);
+    console.log("Docente:", this.docenteSeleccionado);
+
+  }
+
+}
