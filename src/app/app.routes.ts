@@ -8,11 +8,16 @@ import { Results } from './pages/results/results';
 import { Scale } from './pages/scale/scale';
 
 export const routes: Routes = [
-   { path: '', component: Login },
-   { path: 'registro', component: Register },
-   { path: 'estudiantes', component: Student },
-   { path: 'docentes', component:Teacher},
-   { path: 'evaluaciones', component:Evaluations},
-   { path: 'resultados', component:Results},
-   { path: 'escalas', component:Scale},
-]
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+  { path: 'login', component: Login },
+  { path: 'registro', component: Register },
+
+  { path: 'estudiantes', component: Student },
+  { path: 'docentes', component: Teacher },
+  { path: 'evaluaciones', component: Evaluations },
+  { path: 'resultados', component: Results },
+  { path: 'escalas', component: Scale },
+
+  { path: '**', redirectTo: 'login' }
+];

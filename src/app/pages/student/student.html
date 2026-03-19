@@ -5,30 +5,30 @@
   <nav class="menu-navegacion">
     <ul>
 
-      <li class="item-menu">
-        <i class="fas fa-user-graduate"></i>
-        <span>Estudiantes</span>
-      </li>
+<li class="item-menu" routerLink="/estudiantes"> 
+  <i class="fas fa-user-graduate"></i>
+  <span>Estudiantes</span>
+</li>
 
-      <li class="item-menu">
-        <i class="fas fa-chalkboard-teacher"></i>
-        <span>Docentes</span>
-      </li>
+<li class="item-menu" routerLink="/docentes">
+  <i class="fas fa-chalkboard-teacher"></i>
+  <span>Docentes</span>
+</li>
 
-      <li class="item-menu activo">
-        <i class="fas fa-clipboard-list"></i>
-        <span>Evaluaciones</span>
-      </li>
+<li class="item-menu" routerLink="/evaluaciones">
+  <i class="fas fa-clipboard-list"></i>
+  <span>Evaluaciones</span>
+</li>
 
-      <li class="item-menu">
-        <i class="fas fa-id-card"></i>
-        <span>Resultados</span>
-      </li>
+<li class="item-menu" routerLink="/resultados">
+  <i class="fas fa-id-card"></i>
+  <span>Resultados</span>
+</li>
 
-      <li class="item-menu">
-        <i class="fas fa-balance-scale"></i>
-        <span>Escalas</span>
-      </li>
+<li class="item-menu" routerLink="/escalas">
+  <i class="fas fa-balance-scale"></i>
+  <span>Escalas</span>
+</li>
 
     </ul>
   </nav>
@@ -54,30 +54,37 @@
 
       <div>
         <label>Nombre</label>
-        <input type="text" [(ngModel)]="estudiante.nombre">
+        <input type="text" [(ngModel)]="estudiante.nombre" required #nombre="ngModel">
+        <small *ngIf="nombre.invalid && nombre.touched">Nombre obligatorio</small>
       </div>
 
       <div>
         <label>Apellido</label>
-        <input type="text" [(ngModel)]="estudiante.apellido">
+        <input type="text" [(ngModel)]="estudiante.apellido" required #apellido="ngModel">
+        <small *ngIf="apellido.invalid && apellido.touched">Apellido obligatorio</small>
       </div>
 
       <div>
-        <label>Número de id</label>
-        <input type="text" [(ngModel)]="estudiante.id">
+        <label>Número de ID</label>
+        <input type="text" [(ngModel)]="estudiante.id" required #id="ngModel">
+        <small *ngIf="id.invalid && id.touched">ID obligatorio</small>
       </div>
 
       <div>
         <label>Correo</label>
-        <input type="email" [(ngModel)]="estudiante.correo">
+        <input type="email" [(ngModel)]="estudiante.correo" required #correo="ngModel">
+        <small *ngIf="correo.invalid && correo.touched">Email obligatorio</small>
       </div>
 
-    </div>
+     </div>
 
     <div class="botones">
-      <button class="guardar" (click)="guardar()">Guardar</button>
+       <button 
+       class="guardar" (click)="guardar()" [disabled]="!estudiante.nombre || !estudiante.apellido || !estudiante.id || !estudiante.correo"
+>      Guardar
+      </button>
       <button class="cancelar" (click)="limpiar()">Cancelar</button>
-    </div>
+     </div>
 
     <div class="tabla">
 
