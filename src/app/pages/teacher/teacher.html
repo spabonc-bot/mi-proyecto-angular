@@ -2,124 +2,143 @@
 
   <!-- MENU LATERAL -->
   <aside class="menu-lateral">
-
     <nav class="menu-navegacion">
       <ul>
-
         <li class="item-menu">
           <i class="fas fa-user-graduate"></i>
           <span>Estudiantes</span>
         </li>
-
         <li class="item-menu activo">
           <i class="fas fa-chalkboard-teacher"></i>
           <span>Docentes</span>
         </li>
-
-        <li class="item-menu">
-          <i class="fas fa-clipboard-list"></i>
-          <span>Evaluaciones</span>
-        </li>
-
+        <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
+      <i class="fas fa-clipboard-list"></i>
+      <span>Evaluaciones</span>
+    </li>
         <li class="item-menu">
           <i class="fas fa-id-card"></i>
           <span>Resultados</span>
         </li>
-
         <li class="item-menu">
           <i class="fas fa-balance-scale"></i>
           <span>Escalas</span>
         </li>
-
       </ul>
     </nav>
 
-    <div class="footer-menu">
+    <div class="footer-menu" (click)="cerrarSesion()">
       <i class="fas fa-home"></i>
       <span>Cerrar sesión</span>
     </div>
-
   </aside>
 
-
-  
   <div class="contenedor-principal">
 
-   
     <header class="barra-superior">
-
       <h1 class="titulo-sistema">
         Sistema de Docentes
       </h1>
-
       <div class="iconos-barra">
         <i class="fas fa-bell"></i>
         <i class="fas fa-user-circle"></i>
       </div>
-
     </header>
 
-
-    
     <main class="area-contenido">
 
       <h2 class="titulo-seccion">
-        REGISTRO DE DOCENTES
+        {{ editando ? 'EDITAR DOCENTE' : 'REGISTRO DE DOCENTES' }}
       </h2>
 
-
+      
       <div class="tarjeta-formulario">
-
         <div class="grid-formulario">
-
           <div class="grupo-campo">
             <label class="etiqueta">Nombre</label>
-            <input class="entrada" type="text" />
+            <input class="entrada" type="text" [(ngModel)]="docente.nombre" placeholder="Ingrese nombre completo" />
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Identificación</label>
-            <input class="entrada" type="text" />
+            <input class="entrada" type="text" [(ngModel)]="docente.identificacion" placeholder="Ingrese identificación" />
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Correo</label>
-            <input class="entrada" type="email" />
+            <input class="entrada" type="email" [(ngModel)]="docente.correo" placeholder="correo@ejemplo.com" />
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Título Profesional</label>
-            <input class="entrada" type="text" />
+            <input class="entrada" type="text" [(ngModel)]="docente.titulo" placeholder="Ej: Licenciado en Matemáticas" />
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Contraseña</label>
-            <input class="entrada" type="password" />
+            <input class="entrada" type="password" [(ngModel)]="docente.password" placeholder="••••••••" />
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Estado</label>
-            <select class="select-estado">
+            <select class="select-estado" [(ngModel)]="docente.estado">
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
             </select>
           </div>
-
         </div>
-
 
         <div class="botones-formulario">
-
-          <button class="boton guardar">
-            Guardar
+          <button class="boton guardar" (click)="guardarDocente()">
+            {{ editando ? 'ACTUALIZAR' : 'Guardar' }}
           </button>
-
-          <button class="boton cancelar">
+          <button class="boton cancelar" (click)="cancelar()" *ngIf="editando">
             Cancelar
           </button>
-
         </div>
+      </div>
 
+      
+      <div class="tarjeta-lista" *ngIf="listaDocentes.length > 0">
+        <h3>📋 Docentes Registrados ({{listaDocentes.length}})</h3>
+        
+        <div class="tabla-container">
+          <table class="tabla-docentes">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Identificación</th>
+                <th>Correo</th>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let doc of listaDocentes; let i = index">
+                <td>{{doc.nombre}}</td>
+                <td>{{doc.identificacion}}</td>
+                <td>{{doc.correo}}</td>
+                <td>{{doc.titulo || '-'}}</td>
+                <td>
+                  <span class="estado-badge" [class.activo]="doc.estado === 'activo'" [class.inactivo]="doc.estado === 'inactivo'">
+                    {{doc.estado}}
+                  </span>
+                </td>
+                <td class="acciones">
+                  <i class="fas fa-edit" (click)="editarDocente(i)" title="Editar"></i>
+                  <i class="fas fa-trash" (click)="eliminarDocente(i)" title="Eliminar"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <div class="mensaje-vacio" *ngIf="listaDocentes.length === 0">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <p>No hay docentes registrados. ¡Agrega tu primer docente!</p>
       </div>
 
     </main>
@@ -127,4 +146,3 @@
   </div>
 
 </div>
- 
