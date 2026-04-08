@@ -1,1 +1,128 @@
-<p>student works!</p>
+<div class="layout">
+
+<aside class="menu-lateral">
+
+  <nav class="menu-navegacion">
+    <ul>
+
+      <li class="item-menu">
+        <i class="fas fa-user-graduate"></i>
+        <span>Estudiantes</span>
+      </li>
+
+      <li class="item-menu">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Docentes</span>
+      </li>
+
+      <li class="item-menu activo">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Evaluaciones</span>
+      </li>
+
+      <li class="item-menu">
+        <i class="fas fa-id-card"></i>
+        <span>Resultados</span>
+      </li>
+
+      <li class="item-menu">
+        <i class="fas fa-balance-scale"></i>
+        <span>Escalas</span>
+      </li>
+
+    </ul>
+  </nav>
+
+  <div class="footer-menu">
+    <i class="fas fa-home"></i>
+    <span>Cerrar sesión</span>
+  </div>
+
+</aside>
+
+<div class="content">
+
+  <div class="topbar">
+    Sistema de Evaluación de Exámenes
+  </div>
+
+  <div class="card">
+
+    <h3>Registro de estudiantes</h3>
+
+    <div class="formulario">
+
+      <div>
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="estudiante.nombre">
+      </div>
+
+      <div>
+        <label>Apellido</label>
+        <input type="text" [(ngModel)]="estudiante.apellido">
+      </div>
+
+      <div>
+        <label>Número de id</label>
+        <input type="text" [(ngModel)]="estudiante.id">
+      </div>
+
+      <div>
+        <label>Correo</label>
+        <input type="email" [(ngModel)]="estudiante.correo">
+      </div>
+
+    </div>
+
+    <div class="botones">
+      <button class="guardar" (click)="guardar()">Guardar</button>
+      <button class="cancelar" (click)="limpiar()">Cancelar</button>
+    </div>
+
+    <div class="tabla">
+
+      <div class="tabla-header">
+        <h4>Últimos estudiantes</h4>
+
+        <input
+          type="text"
+          placeholder="Buscar estudiante"
+          [(ngModel)]="busqueda"
+        >
+      </div>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Identificación</th>
+            <th>Correo</th>
+            <th>Nota</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let e of estudiantesFiltrados">
+            <td>{{e.nombre}} {{e.apellido}}</td>
+            <td>{{e.id}}</td>
+            <td>{{e.correo}}</td>
+            <td>{{e.nota}}</td>
+            <td>
+              <span class="pendiente">{{e.estado}}</span>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
