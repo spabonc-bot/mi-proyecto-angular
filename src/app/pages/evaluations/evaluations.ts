@@ -4,6 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
+import { EvaluationService } from '../../services/evaluations.service';
+import { TeacherService } from '../../services/teacher.service';
+
+import { EvaluationModel } from '../../models/evaluation';
+import { TeacherModel } from '../../models/teacher';
+
 @Component({
   selector: 'app-evaluations',
   standalone: true,
@@ -13,69 +19,70 @@ import Swal from 'sweetalert2';
 })
 export class Evaluations implements OnInit {
 
-  constructor(private router: Router) {}
-
-  evaluacion = {
+  evaluacion: EvaluationModel = {
     nombre: '',
     tipo: 'multiple',
     cantidad: 0,
     escala: '0 - 5',
-    docente: ''
+    docente: '',
+    preguntas: []
   };
 
-  docentes: any[] = [];
+  docentes: TeacherModel[] = [];
 
-  ngOnInit(): void {
-    this.cargarDocentes();
-  }
+  constructor(
+    private router: Router,
+    private evaluationService: EvaluationService,
+    private teacherService: TeacherService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+  await this.evaluationService.inicializarEvaluacion();
+  this.cargarDocentes();
+}
 
   cargarDocentes(): void {
-    const data = localStorage.getItem('docentes');
-    this.docentes = data ? JSON.parse(data) : [];
+    this.docentes = this.teacherService.getDocentes();
   }
 
   crearEvaluacion(): void {
 
-  const errores: string[] = [];
+    const e = this.evaluacion;
 
-  if (!this.evaluacion.nombre.trim()) {
-    errores.push('Ingrese el nombre');
-  }
+    const errores = [
+      !e.nombre.trim() && 'Ingrese el nombre',
+      (!e.cantidad || e.cantidad <= 0) && 'Cantidad inválida',
+      !e.docente && 'Seleccione docente'
+    ].filter(Boolean) as string[];
 
-  if (!this.evaluacion.cantidad || this.evaluacion.cantidad <= 0) {
-    errores.push('Cantidad inválida');
-  }
+    if (errores.length) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos incompletos',
+        text: errores.join(', ')
+      });
+      return;
+    }
 
-  if (!this.evaluacion.docente) {
-    errores.push('Seleccione docente');
-  }
+    
+    e.cantidad = Number(e.cantidad);
 
-  if (errores.length > 0) {
+    
+    const evaluacionCompleta: EvaluationModel = {
+      ...e,
+      preguntas: []
+    };
+
+    this.evaluationService.guardarEvaluacion(evaluacionCompleta);
+
     Swal.fire({
-      icon: 'error',
-      title: 'Campos incompletos',
-      text: errores.join(', ')
+      icon: 'success',
+      title: 'Evaluación creada',
+      timer: 1200,
+      showConfirmButton: false
+    }).then(() => {
+      this.router.navigate(['/preguntas']);
     });
-    return;
   }
-
   
-  this.evaluacion.cantidad = Number(this.evaluacion.cantidad);
-
-  const evaluacionCompleta = {
-    ...this.evaluacion,
-    preguntas: []
-  };
-
-  localStorage.setItem('evaluacionActiva', JSON.stringify(evaluacionCompleta));
-
-  Swal.fire({
-    icon: 'success',
-    title: 'Evaluación creada',
-    timer: 1200,
-    showConfirmButton: false
-  }).then(() => {
-    this.router.navigate(['/preguntas']);
-  });
-  }
 }

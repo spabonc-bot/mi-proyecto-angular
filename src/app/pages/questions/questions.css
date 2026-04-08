@@ -258,3 +258,24 @@
   }
 
 }
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.acciones i {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.acciones i:hover {
+  transform: scale(1.2);
+}
+
+.fa-eye:hover {
+  color: #3498db;
+}

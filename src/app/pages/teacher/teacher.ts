@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+
+import { TeacherService } from '../../services/teacher.service';
+import { TeacherModel } from '../../models/teacher';
 
 @Component({
   selector: 'app-teacher',
@@ -11,120 +14,9 @@ import Swal from 'sweetalert2';
   templateUrl: './teacher.html',
   styleUrls: ['./teacher.css']
 })
-export class Teacher {
-  nombre: string = '';
-  identificacion: string = '';
-  correo: string = '';
-  titulo: string = '';
-  password: string = '';
-  estado: string = 'activo';
+export class Teacher implements OnInit {
 
-  errorNombre: string = '';
-  errorIdentificacion: string ='';
-  errorCorreo: string = '';
-  errorPassword: string = '';
-
-
-  validarTodo (){
-    let valido  = true;
-
-
-    
-  if (this.nombre.trim() === '') {
-    this.errorNombre = 'El nombre es obligatorio';
-    valido = false;
-  }
-
-  if (this.nombre.trim() !== '' && this.nombre.length < 3) {
-    this.errorNombre = 'Mínimo 3 caracteres';
-    valido = false;
-  }
-
-  if (this.nombre.length > 50) {
-    this.errorNombre = 'Máximo 50 caracteres';
-    valido = false;
-  }
-
-
-  
-  if (this.identificacion.trim() === '') {
-    this.errorIdentificacion = 'La identificación es obligatoria';
-    valido = false;
-  }
-
-  if (!/^[0-9]+$/.test(this.identificacion)) {
-    this.errorIdentificacion = 'Solo números';
-    valido = false;
-  }
-
-  if (this.identificacion.length < 5) {
-    this.errorIdentificacion = 'Mínimo 5 dígitos';
-    valido = false;
-  }
-
-  if (this.identificacion.length > 15) {
-    this.errorIdentificacion = 'Máximo 15 dígitos';
-    valido = false;
-  }
-
-
-  
-  if (this.correo.trim() === '') {
-    this.errorCorreo = 'El correo es obligatorio';
-    valido = false;
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.correo)) {
-    this.errorCorreo = 'Correo inválido';
-    valido = false;
-  }
-
-
-  
-  if (this.titulo.trim() === '') {
-    alert('El título profesional es obligatorio');
-    valido = false;
-  }
-
-  if (this.titulo.length < 3) {
-    alert('El título debe tener mínimo 3 caracteres');
-    valido = false;
-  }
-
-
- 
-  if (this.password.trim() === '') {
-    this.errorPassword = 'La contraseña es obligatoria';
-    valido = false;
-  }
-
-  if (this.password.length < 6) {
-    this.errorPassword = 'Mínimo 6 caracteres';
-    valido = false;
-  }
-
-  if (!/[A-Z]/.test(this.password)) {
-    this.errorPassword = 'Debe tener al menos una mayuscula';
-    valido = false;
-  }
-
-  if (!/[0-9]/.test(this.password)) {
-    this.errorPassword = 'Debe tener al menos un número';
-    valido = false;
-  }
-
-
- 
-  if (this.estado !== 'activo' && this.estado !== 'inactivo') {
-    alert('Seleccione un estado válido');
-    valido = false;
-  }
-
-  return valido;
-}
-  
-
-  docente = {
+  docente: TeacherModel = {
     nombre: '',
     identificacion: '',
     correo: '',
@@ -133,45 +25,47 @@ export class Teacher {
     estado: 'activo'
   };
 
-  listaDocentes: any[] = [];
+  listaDocentes: TeacherModel[] = [];
 
   editando = false;
   indiceEdicion: number | null = null;
 
-  constructor(private router: Router) {
-    this.cargarDocentes();
-  }
+  constructor(
+  private router: Router,
+  private teacherService: TeacherService
+) {}
 
-  
   cargarDocentes() {
-    this.listaDocentes = JSON.parse(localStorage.getItem('docentes') || '[]');
+    this.listaDocentes = this.teacherService.getDocentes();
   }
 
-  
   validarFormulario(): string[] {
-    const errores: string[] = [];
+    const d = this.docente;
 
-    !this.docente.nombre && errores.push('El nombre es obligatorio');
-    !this.docente.identificacion && errores.push('La identificación es obligatoria');
-    !this.docente.correo && errores.push('El correo es obligatorio');
+    const reglas = [
+      () => !d.nombre && 'El nombre es obligatorio',
+      () => d.nombre.length < 3 && 'Nombre mínimo 3 caracteres',
 
-    !/^[0-9]+$/.test(this.docente.identificacion) &&
-      errores.push('La identificación debe ser numérica');
+      () => !d.identificacion && 'Identificación obligatoria',
+      () => !/^[0-9]+$/.test(d.identificacion) && 'Solo números',
 
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.docente.correo) &&
-      errores.push('El correo no es válido');
+      () => !d.correo && 'Correo obligatorio',
+      () => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.correo) && 'Correo inválido',
 
-    this.docente.password.length < 6 &&
-      errores.push('La contraseña debe tener al menos 6 caracteres');
+      () => !d.password && 'Contraseña obligatoria',
+      () => d.password.length < 6 && 'Mínimo 6 caracteres',
 
-    !this.editando &&
-      this.listaDocentes.some(d => d.identificacion === this.docente.identificacion) &&
-      errores.push('Ya existe un docente con esa identificación');
+      () =>
+        !this.editando &&
+        this.teacherService.existeIdentificacion(d.identificacion) &&
+        'Ya existe un docente con esa identificación'
+    ];
 
-    return errores;
+    return reglas
+      .map(r => r())
+      .filter(m => m) as string[];
   }
 
-  
   guardarDocente() {
     const errores = this.validarFormulario();
 
@@ -180,20 +74,22 @@ export class Teacher {
       return;
     }
 
-    this.editando
-      ? this.listaDocentes[this.indiceEdicion!] = { ...this.docente }
-      : this.listaDocentes.push({ ...this.docente });
+    if (this.editando) {
+      this.teacherService.actualizar(this.indiceEdicion!, this.docente);
+    } else {
+      this.teacherService.agregar(this.docente);
+    }
 
-    localStorage.setItem('docentes', JSON.stringify(this.listaDocentes));
-
+    this.cargarDocentes();
     this.limpiarFormulario();
 
     this.mostrarExito(
-      this.editando ? 'Docente actualizado correctamente' : 'Docente guardado correctamente'
+      this.editando
+        ? 'Docente actualizado correctamente'
+        : 'Docente guardado correctamente'
     );
   }
 
-  
   editarDocente(index: number) {
     this.docente = { ...this.listaDocentes[index] };
     this.editando = true;
@@ -202,7 +98,6 @@ export class Teacher {
     this.mostrarInfo(`Editando a ${this.docente.nombre}`);
   }
 
-  
   eliminarDocente(index: number) {
     Swal.fire({
       title: '¿Eliminar docente?',
@@ -214,10 +109,13 @@ export class Teacher {
     }).then(res => {
       if (!res.isConfirmed) return;
 
-      this.listaDocentes.splice(index, 1);
-      localStorage.setItem('docentes', JSON.stringify(this.listaDocentes));
+      this.teacherService.eliminar(index);
 
-      this.editando && this.indiceEdicion === index && this.limpiarFormulario();
+      this.cargarDocentes();
+
+      if (this.editando && this.indiceEdicion === index) {
+        this.limpiarFormulario();
+      }
 
       this.mostrarExito('Docente eliminado correctamente');
     });
@@ -234,7 +132,7 @@ export class Teacher {
       confirmButtonText: 'Sí',
       cancelButtonText: 'No'
     }).then(res => {
-      res.isConfirmed && this.limpiarFormulario();
+      if (res.isConfirmed) this.limpiarFormulario();
     });
   }
 
@@ -269,7 +167,6 @@ export class Teacher {
     });
   }
 
-  
   mostrarExito(mensaje: string) {
     return Swal.fire({
       icon: 'success',
@@ -295,4 +192,8 @@ export class Teacher {
       showConfirmButton: false
     });
   }
+  async ngOnInit(): Promise<void> {
+  await this.teacherService.inicializarDatos();
+  this.cargarDocentes();
+}
 }

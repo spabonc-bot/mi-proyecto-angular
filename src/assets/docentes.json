@@ -1,0 +1,18 @@
+[
+  {
+    "nombre": "Juan Perez",
+    "identificacion": "12345",
+    "correo": "juan@gmail.com",
+    "titulo": "Ingeniero",
+    "password": "123456",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Maria Lopez",
+    "identificacion": "67890",
+    "correo": "maria@gmail.com",
+    "titulo": "Licenciada",
+    "password": "123456",
+    "estado": "inactivo"
+  }
+]
