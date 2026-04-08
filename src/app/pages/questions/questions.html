@@ -97,8 +97,10 @@
 
               <td>{{ p.respuesta }}</td>
 
-              <td>
-                <button (click)="eliminarPregunta(i)">X</button>
+              <td class="acciones">
+                <i class="fas fa-eye" (click)="verPregunta(i)" title="Ver"></i>
+               <i class="fas fa-edit" (click)="editarPregunta(i)" title="Editar"></i>
+               <i class="fas fa-trash" (click)="eliminarPregunta(i)" title="Eliminar"></i>
               </td>
             </tr>
           </tbody>

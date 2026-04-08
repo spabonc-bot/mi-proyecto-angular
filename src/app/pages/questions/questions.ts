@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+
+import { EvaluationService } from '../../services/evaluations.service';
+import { EvaluationModel } from '../../models/evaluation';
+import { QuestionModel } from '../../models/question';
 
 @Component({
   selector: 'app-questions',
@@ -11,15 +15,11 @@ import Swal from 'sweetalert2';
   templateUrl: './questions.html',
   styleUrls: ['./questions.css']
 })
-export class Questions {
+export class Questions implements OnInit {
 
-  constructor(private router: Router) {
-    this.cargarEvaluacion();
-  }
+  evaluacion!: EvaluationModel;
 
-  evaluacion: any = null;
-
-  pregunta = {
+  pregunta: QuestionModel = {
     enunciado: '',
     opcionA: '',
     opcionB: '',
@@ -28,12 +28,20 @@ export class Questions {
     respuesta: ''
   };
 
-  listaPreguntas: any[] = [];
+  listaPreguntas: QuestionModel[] = [];
   editandoIndex: number = -1;
 
-  
+  constructor(
+    private router: Router,
+    private evaluationService: EvaluationService
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarEvaluacion();
+  }
+
   cargarEvaluacion() {
-    const data = localStorage.getItem('evaluacionActiva');
+    const data = this.evaluationService.getEvaluacion();
 
     if (!data) {
       Swal.fire({
@@ -46,22 +54,19 @@ export class Questions {
       return;
     }
 
-    this.evaluacion = JSON.parse(data);
-    this.listaPreguntas = this.evaluacion.preguntas || [];
+    this.evaluacion = data;
+    this.listaPreguntas = data.preguntas || [];
   }
 
-  
   get totalPreguntas() {
     return this.evaluacion?.cantidad || 0;
   }
 
   guardarPregunta() {
 
-    if (!this.evaluacion) return;
-
     const errores = this.validarFormulario();
 
-    if (errores.length > 0) {
+    if (errores.length) {
       Swal.fire({
         icon: 'error',
         title: 'Formulario incompleto',
@@ -70,7 +75,6 @@ export class Questions {
       return;
     }
 
-    
     if (this.editandoIndex === -1 && this.listaPreguntas.length >= this.totalPreguntas) {
       Swal.fire({
         icon: 'warning',
@@ -84,70 +88,51 @@ export class Questions {
       this.listaPreguntas[this.editandoIndex] = { ...this.pregunta };
       this.editandoIndex = -1;
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Pregunta actualizada',
-        timer: 1000,
-        showConfirmButton: false
-      });
+      this.mostrarExito('Pregunta actualizada');
 
     } else {
-
       this.listaPreguntas.push({ ...this.pregunta });
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Pregunta guardada',
-        timer: 1000,
-        showConfirmButton: false
-      });
+      this.mostrarExito('Pregunta guardada');
     }
 
-    
-    this.evaluacion.preguntas = this.listaPreguntas;
-    localStorage.setItem('evaluacionActiva', JSON.stringify(this.evaluacion));
-
+    this.guardarEnStorage();
     this.limpiarFormulario();
   }
 
   validarFormulario(): string[] {
-  const errores: string[] = [];
 
-  if (!this.pregunta.enunciado.trim()) {
-    errores.push('Ingrese la pregunta');
+    const p = this.pregunta;
+    const tipo = this.evaluacion.tipo;
+
+    const reglas = [
+      () => !p.enunciado.trim() && 'Ingrese la pregunta',
+
+      () => tipo === 'multiple' &&
+        (!p.opcionA || !p.opcionB || !p.opcionC || !p.opcionD) &&
+        'Complete todas las opciones',
+
+      () => tipo === 'multiple' &&
+        !['A', 'B', 'C', 'D'].includes(p.respuesta.toUpperCase()) &&
+        'Respuesta debe ser A, B, C o D',
+
+      () => tipo === 'vf' &&
+        !['V', 'F'].includes(p.respuesta.toUpperCase()) &&
+        'Seleccione Verdadero o Falso',
+
+      () => tipo === 'abierta' &&
+        !p.respuesta.trim() &&
+        'Ingrese la respuesta'
+    ];
+
+    return reglas
+      .map(r => r())
+      .filter(m => m) as string[];
   }
 
-  
-  if (this.evaluacion.tipo === 'multiple') {
-
-    if (!this.pregunta.opcionA || !this.pregunta.opcionB ||
-        !this.pregunta.opcionC || !this.pregunta.opcionD) {
-      errores.push('Complete todas las opciones');
-    }
-
-    const r = this.pregunta.respuesta.toUpperCase();
-
-    if (!['A', 'B', 'C', 'D'].includes(r)) {
-      errores.push('Respuesta debe ser A, B, C o D');
-    }
+  guardarEnStorage() {
+    this.evaluacion.preguntas = this.listaPreguntas;
+    this.evaluationService.guardarEvaluacion(this.evaluacion);
   }
-
-  
-  if (this.evaluacion.tipo === 'vf') {
-    if (!['V', 'F'].includes(this.pregunta.respuesta)) {
-      errores.push('Seleccione Verdadero o Falso');
-    }
-  }
-
-  
-  if (this.evaluacion.tipo === 'abierta') {
-    if (!this.pregunta.respuesta.trim()) {
-      errores.push('Ingrese la respuesta');
-    }
-  }
-
-  return errores;
-}
 
   limpiarFormulario() {
     this.pregunta = {
@@ -160,21 +145,37 @@ export class Questions {
     };
   }
 
-  siguientePregunta() {
-    this.limpiarFormulario();
-  }
-
   editarPregunta(index: number) {
     this.pregunta = { ...this.listaPreguntas[index] };
     this.editandoIndex = index;
   }
 
   eliminarPregunta(index: number) {
-
     this.listaPreguntas.splice(index, 1);
+    this.guardarEnStorage();
+  }
 
-    this.evaluacion.preguntas = this.listaPreguntas;
-    localStorage.setItem('evaluacionActiva', JSON.stringify(this.evaluacion));
+  verPregunta(index: number) {
+    const p = this.listaPreguntas[index];
+
+    let contenido = `<strong>${p.enunciado}</strong><br><br>`;
+
+    if (this.evaluacion.tipo === 'multiple') {
+      contenido += `
+        A: ${p.opcionA}<br>
+        B: ${p.opcionB}<br>
+        C: ${p.opcionC}<br>
+        D: ${p.opcionD}<br><br>
+      `;
+    }
+
+    contenido += `<b>Respuesta:</b> ${p.respuesta}`;
+
+    Swal.fire({
+      title: 'Detalle de la pregunta',
+      html: contenido,
+      icon: 'info'
+    });
   }
 
   cancelarEdicion() {
@@ -184,5 +185,14 @@ export class Questions {
 
   cerrarSesion() {
     this.router.navigate(['/']);
+  }
+
+  mostrarExito(mensaje: string) {
+    Swal.fire({
+      icon: 'success',
+      title: mensaje,
+      timer: 1000,
+      showConfirmButton: false
+    });
   }
 }
