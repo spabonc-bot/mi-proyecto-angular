@@ -2,16 +2,25 @@
   <aside class="menu-lateral">
     <nav class="menu-navegacion">
       <ul>
-        <li class="item-menu"><i class="fas fa-user-graduate"></i><span>Estudiantes</span></li>
-        <li class="item-menu"><i class="fas fa-chalkboard-teacher"></i><span>Docentes</span></li>
-        <li class="item-menu"><i class="fas fa-clipboard-list"></i><span>Evaluaciones</span></li>
-        <li class="item-menu activo"><i class="fas fa-id-card"></i><span>Resultados</span></li>
-        <li class="item-menu"><i class="fas fa-balance-scale"></i><span>Escalas</span></li>
+        <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
+          <i class="fas fa-user-graduate"></i><span>Estudiantes</span>
+        </li>
+        <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
+          <i class="fas fa-chalkboard-teacher"></i><span>Docentes</span>
+        </li>
+        <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
+          <i class="fas fa-clipboard-list"></i><span>Evaluaciones</span>
+        </li>
+        <li class="item-menu activo" routerLink="/resultados" routerLinkActive="activo">
+          <i class="fas fa-id-card"></i><span>Resultados</span>
+        </li>
+        <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+          <i class="fas fa-balance-scale"></i><span>Escalas</span>
+        </li>
       </ul>
     </nav>
     <div class="footer-menu">
-      <i class="fas fa-home"></i>
-      <span>Cerrar sesión</span>
+      <i class="fas fa-home"></i><span>Cerrar sesión</span>
     </div>
   </aside>
 
@@ -19,20 +28,16 @@
     <header class="barra-superior">
       <h1 class="titulo-sistema">Sistema de Evaluación - Resultados</h1>
       <div class="iconos-barra">
-        <i class="fas fa-bell"></i>
-        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-bell"></i><i class="fas fa-user-circle"></i>
       </div>
     </header>
-
     <main class="area-contenido">
       <h2 class="titulo-seccion">CONSULTA DE RESULTADOS</h2>
-      
       <div class="tarjeta-lista">
         <div class="tabla-header">
           <h3>Listado de estudiantes</h3>
           <input type="text" class="entrada" placeholder="Buscar por nombre o ID" [(ngModel)]="busqueda">
         </div>
-
         <div class="tabla-container">
           <table class="tabla-docentes">
             <thead>
@@ -54,9 +59,7 @@
                     {{ r.nota >= 3 ? 'Aprobado' : 'Reprobado' }}
                   </span>
                 </td>
-                <td>
-                  <button class="boton guardar">Centro de reportes</button>
-                </td>
+                <td><button class="boton guardar">Centro de reportes</button></td>
               </tr>
             </tbody>
           </table>
