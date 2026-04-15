@@ -1,0 +1,131 @@
+/* ESTRUCTURA */
+.contenedor-pagina {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+}
+
+.menu-lateral {
+    width: 250px;
+    background-color: #1f3a5f;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.contenedor-principal {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.barra-superior {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.area-contenido {
+    padding: 30px;
+}
+
+/* COMPONENTES */
+.tarjeta-formulario, .tarjeta-lista {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.grid-formulario {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.grupo-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.entrada {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 200px;
+}
+
+/* TABLAS Y ESTADOS */
+.tabla-docentes {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-docentes th, .tabla-docentes td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.estado-badge {
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.estado-badge.activo { 
+    background-color: #d4edda; 
+    color: #155724; 
+}
+
+.estado-badge.inactivo { 
+    background-color: #f8d7da; 
+    color: #721c24; 
+}
+
+/* BOTONES E ICONOS */
+.boton.guardar {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.acciones i {
+    cursor: pointer;
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+.fa-edit { color: #007bff; }
+.fa-trash { color: #dc3545; }
+
+/* MENU */
+.item-menu {
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-menu.activo {
+    background: #2f4f77;
+    border-left: 4px solid #4fa3ff;
+}
+
+.footer-menu {
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

@@ -11,7 +11,7 @@ describe('Scale', () => {
       imports: [Scale]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(Scale);
     component = fixture.componentInstance;
     await fixture.whenStable();

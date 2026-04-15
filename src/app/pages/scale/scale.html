@@ -1,1 +1,68 @@
-<p>scale works!</p>
+<div class="contenedor-pagina">
+  <aside class="menu-lateral">
+    <nav class="menu-navegacion">
+      <ul>
+        <li class="item-menu"><i class="fas fa-user-graduate"></i><span>Estudiantes</span></li>
+        <li class="item-menu"><i class="fas fa-chalkboard-teacher"></i><span>Docentes</span></li>
+        <li class="item-menu"><i class="fas fa-clipboard-list"></i><span>Evaluaciones</span></li>
+        <li class="item-menu"><i class="fas fa-id-card"></i><span>Resultados</span></li>
+        <li class="item-menu activo"><i class="fas fa-balance-scale"></i><span>Escalas</span></li>
+      </ul>
+    </nav>
+    <div class="footer-menu">
+      <i class="fas fa-home"></i><span>Cerrar sesión</span>
+    </div>
+  </aside>
+
+  <div class="contenedor-principal">
+    <header class="barra-superior">
+      <h1 class="titulo-sistema">Sistema de Evaluación - Escalas</h1>
+    </header>
+
+    <main class="area-contenido">
+      <div class="tarjeta-formulario">
+        <h2 class="titulo-seccion">REGISTRO DE ESCALAS</h2>
+        <div class="grid-formulario">
+          <div class="grupo-campo">
+            <label>Nombre de escala</label>
+            <input class="entrada" type="text" [(ngModel)]="nuevaEscala.nombre" placeholder="Ej: 0 - 5">
+          </div>
+          <div class="grupo-campo">
+            <label>Nota mínima</label>
+            <input class="entrada" type="number" [(ngModel)]="nuevaEscala.min">
+          </div>
+          <div class="grupo-campo">
+            <label>Nota máxima</label>
+            <input class="entrada" type="number" [(ngModel)]="nuevaEscala.max">
+          </div>
+          <button class="boton guardar" (click)="agregarEscala()">Guardar</button>
+        </div>
+      </div>
+
+      <div class="tarjeta-lista">
+        <h2 class="titulo-seccion">Identificadores Registrados</h2>
+        <table class="tabla-docentes">
+          <thead>
+            <tr>
+              <th>Identificador</th>
+              <th>Mínima</th>
+              <th>Máxima</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let escala of escalasFiltradas">
+              <td>{{escala.nombre}}</td>
+              <td>{{escala.min}}</td>
+              <td>{{escala.max}}</td>
+              <td class="acciones">
+                <i class="fas fa-edit" (click)="editarEscala(escala)"></i>
+                <i class="fas fa-trash" (click)="eliminarEscala(escala)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
