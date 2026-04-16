@@ -3,11 +3,30 @@
   <aside class="menu-lateral">
     <nav class="menu-navegacion">
       <ul>
-        <li class="item-menu"><i class="fas fa-user-graduate"></i><span>Estudiantes</span></li>
-        <li class="item-menu"><i class="fas fa-chalkboard-teacher"></i><span>Docentes</span></li>
-        <li class="item-menu activo"><i class="fas fa-clipboard-list"></i><span>Evaluaciones</span></li>
-        <li class="item-menu"><i class="fas fa-id-card"></i><span>Resultados</span></li>
-        <li class="item-menu"><i class="fas fa-balance-scale"></i><span>Escalas</span></li>
+        <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
+          <i class="fas fa-user-graduate"></i>
+          <span>Estudiantes</span>
+        </li>
+
+        <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
+          <i class="fas fa-chalkboard-teacher"></i>
+          <span>Docentes</span>
+        </li>
+
+        <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
+          <i class="fas fa-clipboard-list"></i>
+          <span>Evaluaciones</span>
+        </li>
+
+        <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
+          <i class="fas fa-id-card"></i>
+          <span>Resultados</span>
+        </li>
+
+        <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+          <i class="fas fa-balance-scale"></i>
+          <span>Escalas</span>
+        </li>
       </ul>
     </nav>
 
@@ -25,7 +44,6 @@
 
     <main class="area-contenido">
 
-     
       <div class="tarjeta-info-evaluacion" *ngIf="evaluacion">
         <h3>{{ evaluacion.nombre }}</h3>
         <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
@@ -33,13 +51,11 @@
         <p><strong>Preguntas:</strong> {{ listaPreguntas.length }} / {{ totalPreguntas }}</p>
       </div>
 
-      
       <div class="tarjeta-formulario">
 
         <input [(ngModel)]="pregunta.enunciado" placeholder="Pregunta" class="entrada">
 
-        
-        <div *ngIf="evaluacion?.tipo === 'multiple'">
+        <div *ngIf="evaluacion.tipo === 'multiple'">
           <input [(ngModel)]="pregunta.opcionA" placeholder="Opción A" class="entrada">
           <input [(ngModel)]="pregunta.opcionB" placeholder="Opción B" class="entrada">
           <input [(ngModel)]="pregunta.opcionC" placeholder="Opción C" class="entrada">
@@ -47,8 +63,7 @@
           <input [(ngModel)]="pregunta.respuesta" placeholder="Respuesta (A-D)" class="entrada">
         </div>
 
-       
-        <div *ngIf="evaluacion?.tipo === 'vf'">
+        <div *ngIf="evaluacion.tipo === 'vf'">
           <select [(ngModel)]="pregunta.respuesta" class="entrada">
             <option value="">Seleccione</option>
             <option value="V">Verdadero</option>
@@ -56,8 +71,7 @@
           </select>
         </div>
 
-        
-        <div *ngIf="evaluacion?.tipo === 'abierta'">
+        <div *ngIf="evaluacion.tipo === 'abierta'">
           <input [(ngModel)]="pregunta.respuesta" placeholder="Respuesta" class="entrada">
         </div>
 
@@ -65,7 +79,6 @@
 
       </div>
 
-     
       <div class="tarjeta-lista" *ngIf="listaPreguntas.length > 0">
 
         <table class="tabla-preguntas">
@@ -74,8 +87,11 @@
               <th>#</th>
               <th>Pregunta</th>
 
-              <ng-container *ngIf="evaluacion?.tipo === 'multiple'">
-                <th>A</th><th>B</th><th>C</th><th>D</th>
+              <ng-container *ngIf="evaluacion.tipo === 'multiple'">
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
               </ng-container>
 
               <th>Respuesta</th>
@@ -85,10 +101,10 @@
 
           <tbody>
             <tr *ngFor="let p of listaPreguntas; let i = index">
-              <td>{{ i+1 }}</td>
+              <td>{{ i + 1 }}</td>
               <td>{{ p.enunciado }}</td>
 
-              <ng-container *ngIf="evaluacion?.tipo === 'multiple'">
+              <ng-container *ngIf="evaluacion.tipo === 'multiple'">
                 <td>{{ p.opcionA }}</td>
                 <td>{{ p.opcionB }}</td>
                 <td>{{ p.opcionC }}</td>
@@ -99,8 +115,8 @@
 
               <td class="acciones">
                 <i class="fas fa-eye" (click)="verPregunta(i)" title="Ver"></i>
-               <i class="fas fa-edit" (click)="editarPregunta(i)" title="Editar"></i>
-               <i class="fas fa-trash" (click)="eliminarPregunta(i)" title="Eliminar"></i>
+                <i class="fas fa-edit" (click)="editarPregunta(i)" title="Editar"></i>
+                <i class="fas fa-trash" (click)="eliminarPregunta(i)" title="Eliminar"></i>
               </td>
             </tr>
           </tbody>

@@ -1,40 +1,42 @@
 <div class="contenedor-pagina">
 
   <aside class="menu-lateral">
-    <nav class="menu-navegacion">
-      <ul>
-        <li class="item-menu">
-          <i class="fas fa-user-graduate"></i>
-          <span>Estudiantes</span>
-        </li>
+  <nav class="menu-navegacion">
+    <ul>
 
-        <li class="item-menu">
-          <i class="fas fa-chalkboard-teacher"></i>
-          <span>Docentes</span>
-        </li>
+      <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
+        <i class="fas fa-user-graduate"></i>
+        <span>Estudiantes</span>
+      </li>
 
-        <li class="item-menu activo">
-          <i class="fas fa-clipboard-list"></i>
-          <span>Evaluaciones</span>
-        </li>
+      <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Docentes</span>
+      </li>
 
-        <li class="item-menu">
-          <i class="fas fa-id-card"></i>
-          <span>Resultados</span>
-        </li>
+      <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Evaluaciones</span>
+      </li>
 
-        <li class="item-menu">
-          <i class="fas fa-balance-scale"></i>
-          <span>Escalas</span>
-        </li>
-      </ul>
-    </nav>
+      <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
+        <i class="fas fa-id-card"></i>
+        <span>Resultados</span>
+      </li>
 
-    <div class="footer-menu">
-      <i class="fas fa-home"></i>
-      <span>Cerrar sesión</span>
-    </div>
-  </aside>
+      <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+        <i class="fas fa-balance-scale"></i>
+        <span>Escalas</span>
+      </li>
+
+    </ul>
+  </nav>
+
+  <div class="footer-menu" (click)="cerrarSesion()">
+    <i class="fas fa-home"></i>
+    <span>Cerrar sesión</span>
+  </div>
+</aside>
 
   <div class="contenedor-principal">
 
@@ -73,9 +75,10 @@
         <div class="grupo-campo">
           <label class="etiqueta">Escala</label>
           <select class="select-estado" [(ngModel)]="evaluacion.escala">
-            <option>0 - 5</option>
-            <option>0 - 10</option>
-            <option>0 - 100</option>
+            <option value="">Seleccione escala</option>
+            <option *ngFor="let escala of escalas" [value]="escala.nombre">
+              {{ escala.nombre }}
+            </option>
           </select>
         </div>
 

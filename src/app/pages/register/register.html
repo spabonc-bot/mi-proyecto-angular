@@ -1,1 +1,29 @@
-<p>register works!</p>
+<div class="contenedor">
+
+  <div class="register-box">
+
+    <h2>Registro de Estudiante</h2>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="estudiante.nombre" placeholder="Ingrese su nombre">
+
+    <label>Apellido</label>
+    <input type="text" [(ngModel)]="estudiante.apellido" placeholder="Ingrese su apellido">
+
+    <label>Número de Identificación</label>
+    <input type="text" [(ngModel)]="estudiante.identificacion" placeholder="Ingrese su identificación">
+
+    <label>Correo</label>
+    <input type="email" [(ngModel)]="estudiante.correo" placeholder="Ingrese su correo">
+
+    <label>Código de Acceso</label>
+    <input type="password" [(ngModel)]="estudiante.password" placeholder="Ingrese una contraseña">
+
+    <div class="botones">
+      <button class="btn-principal" (click)="registrarEstudiante()">Registrarse</button>
+      <button class="btn-secundario" (click)="volverLogin()">Volver al login</button>
+    </div>
+
+  </div>
+
+</div>
