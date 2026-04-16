@@ -1,26 +1,30 @@
 <div class="contenedor-pagina">
 
   
-  <aside class="menu-lateral">
+   <aside class="menu-lateral">
     <nav class="menu-navegacion">
       <ul>
-        <li class="item-menu">
+        <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
           <i class="fas fa-user-graduate"></i>
           <span>Estudiantes</span>
         </li>
-        <li class="item-menu activo">
+
+        <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
           <i class="fas fa-chalkboard-teacher"></i>
           <span>Docentes</span>
         </li>
+
         <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
-      <i class="fas fa-clipboard-list"></i>
-      <span>Evaluaciones</span>
-    </li>
-        <li class="item-menu">
+          <i class="fas fa-clipboard-list"></i>
+          <span>Evaluaciones</span>
+        </li>
+
+        <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
           <i class="fas fa-id-card"></i>
           <span>Resultados</span>
         </li>
-        <li class="item-menu">
+
+        <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
           <i class="fas fa-balance-scale"></i>
           <span>Escalas</span>
         </li>
@@ -37,7 +41,7 @@
 
     <header class="barra-superior">
       <h1 class="titulo-sistema">
-        Sistema de Docentes
+        Sistema de Evaluacion - Docentes
       </h1>
       <div class="iconos-barra">
         <i class="fas fa-bell"></i>

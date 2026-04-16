@@ -11,24 +11,28 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./results.css']
 })
 export class Results {
-  busqueda: string = '';
+  filtro: string = ''; // Nombre que usan tus compañeros
   estudianteSeleccionado: any = null;
 
-  // Datos de prueba para que veas algo de una vez
   resultados = [
-    { nombre: 'Juan', apellido: 'Pérez', id: '1001', nota: 4.8 },
-    { nombre: 'Maria', apellido: 'Lopez', id: '1002', nota: 2.5 },
-    { nombre: 'Carlos', apellido: 'Ruiz', id: '1003', nota: 3.5 }
+    { estudiante: 'Juan Pérez', identificacion: '1001', nota: 4.8 },
+    { estudiante: 'Maria Lopez', identificacion: '1002', nota: 2.5 },
+    { estudiante: 'Carlos Ruiz', identificacion: '1003', nota: 3.5 }
   ];
 
   get resultadosFiltrados() {
     return this.resultados.filter(r => 
-      r.nombre.toLowerCase().includes(this.busqueda.toLowerCase()) || 
-      r.id.includes(this.busqueda)
+      r.estudiante.toLowerCase().includes(this.filtro.toLowerCase()) || 
+      r.identificacion.includes(this.filtro)
     );
   }
 
-  seleccionarEstudiante(estudiante: any) {
-    this.estudianteSeleccionado = estudiante;
+  seleccionarEstudiante(r: any) {
+    this.estudianteSeleccionado = r;
+  }
+
+  cerrarSesion() {
+    // Lógica para cerrar sesión
+    console.log('Sesión cerrada');
   }
 }

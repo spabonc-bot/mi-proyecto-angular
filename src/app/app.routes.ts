@@ -7,6 +7,7 @@ import { Evaluations } from './pages/evaluations/evaluations';
 import { Questions } from './pages/questions/questions';
 import { Results } from './pages/results/results';
 import { Scale } from './pages/scale/scale';
+import { Exam } from './pages/exam/exam';
 
 
 export const routes: Routes = [
@@ -18,4 +19,5 @@ export const routes: Routes = [
    { path: 'preguntas', component: Questions},
    { path: 'resultados', component:Results},
    { path: 'escalas', component:Scale},
+   { path: 'examen', component: Exam },
 ]
