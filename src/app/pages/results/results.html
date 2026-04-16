@@ -1,5 +1,5 @@
 <div class="contenedor-pagina">
-  <aside class="menu-lateral">
+ <aside class="menu-lateral">
     <nav class="menu-navegacion">
       <ul>
         <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
@@ -11,10 +11,10 @@
         <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
           <i class="fas fa-clipboard-list"></i><span>Evaluaciones</span>
         </li>
-        <li class="item-menu activo" routerLink="/resultados" routerLinkActive="activo">
+        <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
           <i class="fas fa-id-card"></i><span>Resultados</span>
         </li>
-        <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+        <li class="item-menu activo" routerLink="/escalas" routerLinkActive="activo">
           <i class="fas fa-balance-scale"></i><span>Escalas</span>
         </li>
       </ul>
@@ -27,24 +27,21 @@
   <div class="contenedor-principal">
     <header class="barra-superior">
       <h1 class="titulo-sistema">Sistema de Evaluación - Resultados</h1>
-      <div class="iconos-barra">
-        <i class="fas fa-bell"></i><i class="fas fa-user-circle"></i>
-      </div>
     </header>
+
     <main class="area-contenido">
-      <h2 class="titulo-seccion">CONSULTA DE RESULTADOS</h2>
       <div class="tarjeta-lista">
         <div class="tabla-header">
-          <h3>Listado de estudiantes</h3>
-          <input type="text" class="entrada" placeholder="Buscar por nombre o ID" [(ngModel)]="busqueda">
+          <h2 class="titulo-seccion">CONSULTA DE RESULTADOS</h2>
+          <input type="text" class="entrada" placeholder="Buscar estudiante..." [(ngModel)]="busqueda">
         </div>
+
         <div class="tabla-container">
           <table class="tabla-docentes">
             <thead>
               <tr>
                 <th>Estudiante</th>
-                <th>Identificación</th>
-                <th>Nota Final</th>
+                <th>Nota</th>
                 <th>Estado</th>
                 <th>Acción</th>
               </tr>
@@ -52,17 +49,42 @@
             <tbody>
               <tr *ngFor="let r of resultadosFiltrados">
                 <td>{{r.nombre}} {{r.apellido}}</td>
-                <td>{{r.id}}</td>
-                <td>{{r.nota}}</td>
+                <td><strong>{{r.nota}}</strong></td>
                 <td>
                   <span class="estado-badge" [class.activo]="r.nota >= 3" [class.inactivo]="r.nota < 3">
                     {{ r.nota >= 3 ? 'Aprobado' : 'Reprobado' }}
                   </span>
                 </td>
-                <td><button class="boton guardar">Centro de reportes</button></td>
+                <td>
+                  <button class="boton guardar" (click)="seleccionarEstudiante(r)">
+                    <i class="fas fa-file-alt"></i> Reporte
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div class="tarjeta-formulario" *ngIf="estudianteSeleccionado" style="margin-top: 20px; border-top: 5px solid #1f3a5f;">
+        <div style="display: flex; justify-content: space-between;">
+          <h3 style="color: #1f3a5f;">INFORME: {{estudianteSeleccionado.nombre}}</h3>
+          <button (click)="estudianteSeleccionado = null" style="cursor:pointer; color: red; background: none; border: none;">X</button>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <div *ngIf="estudianteSeleccionado.nota >= 4.5">
+            <p style="color: green; font-weight: bold;">⭐ ¡EXCELENTE!</p>
+            <p>El estudiante domina todos los temas del módulo.</p>
+          </div>
+          <div *ngIf="estudianteSeleccionado.nota >= 3 && estudianteSeleccionado.nota < 4.5">
+            <p style="color: #1f3a5f; font-weight: bold;">✔️ APROBADO</p>
+            <p>Cumple con los requisitos. Se sugiere seguir practicando.</p>
+          </div>
+          <div *ngIf="estudianteSeleccionado.nota < 3">
+            <p style="color: red; font-weight: bold;">⚠️ REFUERZO NECESARIO</p>
+            <p>No alcanzó los logros. Debe programar una nivelación.</p>
+          </div>
         </div>
       </div>
     </main>

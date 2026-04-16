@@ -1,30 +1,34 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-results',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './results.html',
-  styleUrl: './results.css'
+  styleUrls: ['./results.css']
 })
 export class Results {
+  busqueda: string = '';
+  estudianteSeleccionado: any = null;
 
-  
-  resultados: any[] = [
-    { nombre: 'Juan', apellido: 'Peréz', id: '1234567', nota: 4.5 },
-    { nombre: 'Ariana', apellido: 'Gómez', id: '0123456', nota: 2.8 },
-    { nombre: 'Daniel', apellido: 'londoño', id: '2345678', nota: 5.0 }
+  // Datos de prueba para que veas algo de una vez
+  resultados = [
+    { nombre: 'Juan', apellido: 'Pérez', id: '1001', nota: 4.8 },
+    { nombre: 'Maria', apellido: 'Lopez', id: '1002', nota: 2.5 },
+    { nombre: 'Carlos', apellido: 'Ruiz', id: '1003', nota: 3.5 }
   ];
 
-  busqueda: string = '';
-
-  
   get resultadosFiltrados() {
-    return this.resultados.filter(r =>
-      r.nombre.toLowerCase().includes(this.busqueda.toLowerCase()) ||
+    return this.resultados.filter(r => 
+      r.nombre.toLowerCase().includes(this.busqueda.toLowerCase()) || 
       r.id.includes(this.busqueda)
     );
+  }
+
+  seleccionarEstudiante(estudiante: any) {
+    this.estudianteSeleccionado = estudiante;
   }
 }
