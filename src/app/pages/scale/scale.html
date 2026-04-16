@@ -1,26 +1,37 @@
 <div class="contenedor-pagina">
-  <aside class="menu-lateral">
+   <aside class="menu-lateral">
     <nav class="menu-navegacion">
       <ul>
         <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
-          <i class="fas fa-user-graduate"></i><span>Estudiantes</span>
+          <i class="fas fa-user-graduate"></i>
+          <span>Estudiantes</span>
         </li>
+
         <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
-          <i class="fas fa-chalkboard-teacher"></i><span>Docentes</span>
+          <i class="fas fa-chalkboard-teacher"></i>
+          <span>Docentes</span>
         </li>
+
         <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
-          <i class="fas fa-clipboard-list"></i><span>Evaluaciones</span>
+          <i class="fas fa-clipboard-list"></i>
+          <span>Evaluaciones</span>
         </li>
+
         <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
-          <i class="fas fa-id-card"></i><span>Resultados</span>
+          <i class="fas fa-id-card"></i>
+          <span>Resultados</span>
         </li>
-        <li class="item-menu activo" routerLink="/escalas" routerLinkActive="activo">
-          <i class="fas fa-balance-scale"></i><span>Escalas</span>
+
+        <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+          <i class="fas fa-balance-scale"></i>
+          <span>Escalas</span>
         </li>
       </ul>
     </nav>
-    <div class="footer-menu">
-      <i class="fas fa-home"></i><span>Cerrar sesión</span>
+
+    <div class="footer-menu" (click)="cerrarSesion()">
+      <i class="fas fa-home"></i>
+      <span>Cerrar sesión</span>
     </div>
   </aside>
 
@@ -28,29 +39,63 @@
     <header class="barra-superior">
       <h1 class="titulo-sistema">Sistema de Evaluación - Escalas</h1>
       <div class="iconos-barra">
-        <i class="fas fa-bell"></i><i class="fas fa-user-circle"></i>
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-user-circle"></i>
       </div>
     </header>
+
     <main class="area-contenido">
-      <h2 class="titulo-seccion">{{ editando ? 'EDITAR ESCALA' : 'REGISTRO DE ESCALAS' }}</h2>
+      <h2 class="titulo-seccion">
+        {{ editando ? 'EDITAR ESCALA' : 'REGISTRO DE ESCALAS' }}
+      </h2>
+
       <div class="tarjeta-formulario">
         <div class="grid-formulario">
           <div class="grupo-campo">
             <label class="etiqueta">Nombre de escala</label>
-            <input class="entrada" type="text" [(ngModel)]="nuevaEscala.nombre" placeholder="Ej: 0 - 5">
+            <input
+              class="entrada"
+              type="text"
+              [(ngModel)]="nuevaEscala.nombre"
+              placeholder="Ej: 0 - 5"
+            >
           </div>
+
           <div class="grupo-campo">
             <label class="etiqueta">Nota mínima</label>
-            <input class="entrada" type="number" [(ngModel)]="nuevaEscala.min">
+            <input
+              class="entrada"
+              type="number"
+              [(ngModel)]="nuevaEscala.min"
+            >
           </div>
+
           <div class="grupo-campo">
             <label class="etiqueta">Nota máxima</label>
-            <input class="entrada" type="number" [(ngModel)]="nuevaEscala.max">
+            <input
+              class="entrada"
+              type="number"
+              [(ngModel)]="nuevaEscala.max"
+            >
           </div>
-          <button class="boton guardar" (click)="agregarEscala()">{{ editando ? 'ACTUALIZAR' : 'Guardar' }}</button>
+
+          <button class="boton guardar" (click)="agregarEscala()">
+            {{ editando ? 'ACTUALIZAR' : 'GUARDAR' }}
+          </button>
         </div>
       </div>
+
       <div class="tarjeta-lista">
+        <div class="grupo-campo" style="margin-bottom: 20px;">
+          <label class="etiqueta">Buscar escala</label>
+          <input
+            class="entrada"
+            type="text"
+            [(ngModel)]="busqueda"
+            placeholder="Buscar por nombre"
+          >
+        </div>
+
         <div class="tabla-container">
           <table class="tabla-docentes">
             <thead>
@@ -61,15 +106,20 @@
                 <th>Acciones</th>
               </tr>
             </thead>
+
             <tbody>
               <tr *ngFor="let escala of escalasFiltradas">
-                <td>{{escala.nombre}}</td>
-                <td>{{escala.min}}</td>
-                <td>{{escala.max}}</td>
+                <td>{{ escala.nombre }}</td>
+                <td>{{ escala.min }}</td>
+                <td>{{ escala.max }}</td>
                 <td class="acciones">
                   <i class="fas fa-edit" (click)="editarEscala(escala)"></i>
                   <i class="fas fa-trash" (click)="eliminarEscala(escala)"></i>
                 </td>
+              </tr>
+
+              <tr *ngIf="escalasFiltradas.length === 0">
+                <td colspan="4">No hay escalas registradas</td>
               </tr>
             </tbody>
           </table>
