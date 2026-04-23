@@ -1,0 +1,110 @@
+<div class="contenedor-examen">
+
+  <div class="cabecera-examen cabecera-bienvenida">
+    <div>
+      <h2>Sistema de Evaluación</h2>
+      <p class="saludo"><strong>Bienvenido:</strong> {{ nombreUsuario }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="!evaluacion">
+
+    <div class="cabecera-examen">
+      <h2>Seleccionar evaluación</h2>
+      <p>Elige la evaluación que deseas presentar</p>
+    </div>
+
+    <div *ngIf="evaluacionesDisponibles.length > 0; else vacio" class="lista-evaluaciones">
+      <div class="tarjeta-evaluacion" *ngFor="let e of evaluacionesDisponibles">
+        <h3>{{ e.nombre }}</h3>
+        <p><strong>Docente:</strong> {{ e.docente }}</p>
+        <p><strong>Tipo:</strong> {{ e.tipo }}</p>
+        <p><strong>Escala:</strong> {{ e.escala }}</p>
+        <p><strong>Preguntas:</strong> {{ e.preguntas?.length || 0 }}</p>
+
+        <button
+          class="btn-enviar"
+          [disabled]="yaPresentoEvaluacion(e)"
+          (click)="seleccionarEvaluacion(e)">
+          {{ yaPresentoEvaluacion(e) ? 'Ya presentado' : 'Presentar evaluación' }}
+        </button>
+      </div>
+    </div>
+
+    <ng-template #vacio>
+      <div class="pregunta-box vacio-box">
+        <h3>No hay evaluaciones disponibles</h3>
+        <p>Aún no hay evaluaciones con preguntas registradas.</p>
+      </div>
+    </ng-template>
+
+  </div>
+
+  <div *ngIf="evaluacion">
+
+    <div class="cabecera-examen">
+      <h2>{{ evaluacion.nombre }}</h2>
+      <div class="info-evaluacion">
+        <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
+        <p><strong>Tipo:</strong> {{ evaluacion.tipo }}</p>
+        <p><strong>Escala:</strong> {{ evaluacion.escala }}</p>
+        <p><strong>Preguntas:</strong> {{ evaluacion.preguntas?.length || 0 }}</p>
+      </div>
+    </div>
+
+    <div class="pregunta-box" *ngFor="let p of evaluacion.preguntas; let i = index">
+      <h3>{{ i + 1 }}. {{ p.enunciado }}</h3>
+
+      <div *ngIf="evaluacion.tipo === 'multiple'" class="opciones">
+        <label class="opcion-item">
+          <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'A')">
+          <span>A. {{ p.opcionA }}</span>
+        </label>
+
+        <label class="opcion-item">
+          <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'B')">
+          <span>B. {{ p.opcionB }}</span>
+        </label>
+
+        <label class="opcion-item">
+          <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'C')">
+          <span>C. {{ p.opcionC }}</span>
+        </label>
+
+        <label class="opcion-item">
+          <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'D')">
+          <span>D. {{ p.opcionD }}</span>
+        </label>
+      </div>
+
+      <div *ngIf="evaluacion.tipo === 'vf'" class="opciones">
+        <label class="opcion-item">
+          <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'V')">
+          <span>Verdadero</span>
+        </label>
+
+        <label class="opcion-item">
+          <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'F')">
+          <span>Falso</span>
+        </label>
+      </div>
+
+      <div *ngIf="evaluacion.tipo === 'abierta'">
+        <input
+          type="text"
+          class="entrada"
+          placeholder="Escriba su respuesta"
+          (input)="responder(i, $any($event.target).value)"
+        >
+      </div>
+    </div>
+
+    <div class="acciones-examen">
+      <button class="btn-enviar" (click)="finalizarExamen()">Enviar examen</button>
+      <button class="btn-volver" (click)="volverASeleccionar()">Cambiar evaluación</button>
+      <button class="btn-salir" (click)="cerrarSesion()">Salir</button>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,129 @@
+<div class="contenedor-pagina">
+
+  <aside class="menu-lateral">
+    <nav class="menu-navegacion">
+      <ul>
+        <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
+          <i class="fas fa-user-graduate"></i>
+          <span>Estudiantes</span>
+        </li>
+
+        <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
+          <i class="fas fa-chalkboard-teacher"></i>
+          <span>Docentes</span>
+        </li>
+
+        <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
+          <i class="fas fa-clipboard-list"></i>
+          <span>Evaluaciones</span>
+        </li>
+
+        <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
+          <i class="fas fa-id-card"></i>
+          <span>Resultados</span>
+        </li>
+
+        <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+          <i class="fas fa-balance-scale"></i>
+          <span>Escalas</span>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="footer-menu" (click)="cerrarSesion()">
+      <i class="fas fa-home"></i>
+      <span>Cerrar sesión</span>
+    </div>
+  </aside>
+
+  <div class="contenedor-principal">
+
+    <header class="barra-superior">
+      <h1 class="titulo-sistema">Sistema de Evaluación de Exámenes</h1>
+    </header>
+
+    <main class="area-contenido">
+
+      <div class="tarjeta-info-evaluacion" *ngIf="evaluacion">
+        <h3>{{ evaluacion.nombre }}</h3>
+        <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
+        <p><strong>Tipo:</strong> {{ evaluacion.tipo }}</p>
+        <p><strong>Preguntas:</strong> {{ listaPreguntas.length }} / {{ totalPreguntas }}</p>
+      </div>
+
+      <div class="tarjeta-formulario">
+
+        <input [(ngModel)]="pregunta.enunciado" placeholder="Pregunta" class="entrada">
+
+        <div *ngIf="evaluacion.tipo === 'multiple'">
+          <input [(ngModel)]="pregunta.opcionA" placeholder="Opción A" class="entrada">
+          <input [(ngModel)]="pregunta.opcionB" placeholder="Opción B" class="entrada">
+          <input [(ngModel)]="pregunta.opcionC" placeholder="Opción C" class="entrada">
+          <input [(ngModel)]="pregunta.opcionD" placeholder="Opción D" class="entrada">
+          <input [(ngModel)]="pregunta.respuesta" placeholder="Respuesta (A-D)" class="entrada">
+        </div>
+
+        <div *ngIf="evaluacion.tipo === 'vf'">
+          <select [(ngModel)]="pregunta.respuesta" class="entrada">
+            <option value="">Seleccione</option>
+            <option value="V">Verdadero</option>
+            <option value="F">Falso</option>
+          </select>
+        </div>
+
+        <div *ngIf="evaluacion.tipo === 'abierta'">
+          <input [(ngModel)]="pregunta.respuesta" placeholder="Respuesta" class="entrada">
+        </div>
+
+        <button class="boton guardar" (click)="guardarPregunta()">Guardar</button>
+
+      </div>
+
+      <div class="tarjeta-lista" *ngIf="listaPreguntas.length > 0">
+
+        <table class="tabla-preguntas">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Pregunta</th>
+
+              <ng-container *ngIf="evaluacion.tipo === 'multiple'">
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
+              </ng-container>
+
+              <th>Respuesta</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let p of listaPreguntas; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ p.enunciado }}</td>
+
+              <ng-container *ngIf="evaluacion.tipo === 'multiple'">
+                <td>{{ p.opcionA }}</td>
+                <td>{{ p.opcionB }}</td>
+                <td>{{ p.opcionC }}</td>
+                <td>{{ p.opcionD }}</td>
+              </ng-container>
+
+              <td>{{ p.respuesta }}</td>
+
+              <td class="acciones">
+                <i class="fas fa-eye" (click)="verPregunta(i)" title="Ver"></i>
+                <i class="fas fa-edit" (click)="editarPregunta(i)" title="Editar"></i>
+                <i class="fas fa-trash" (click)="eliminarPregunta(i)" title="Eliminar"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+    </main>
+  </div>
+</div>

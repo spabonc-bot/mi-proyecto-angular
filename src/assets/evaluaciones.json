@@ -1,0 +1,10 @@
+[
+  {
+    "nombre": "Evaluación Demo",
+    "tipo": "vf",
+    "cantidad": 2,
+    "escala": "0 - 5",
+    "docente": "Juan Perez",
+    "preguntas": []
+  }
+]

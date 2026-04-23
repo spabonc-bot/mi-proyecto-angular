@@ -1,1 +1,106 @@
-<p>evaluations works!</p>
+<div class="contenedor-pagina">
+
+  <aside class="menu-lateral">
+  <nav class="menu-navegacion">
+    <ul>
+
+      <li class="item-menu" routerLink="/estudiantes" routerLinkActive="activo">
+        <i class="fas fa-user-graduate"></i>
+        <span>Estudiantes</span>
+      </li>
+
+      <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Docentes</span>
+      </li>
+
+      <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Evaluaciones</span>
+      </li>
+
+      <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
+        <i class="fas fa-id-card"></i>
+        <span>Resultados</span>
+      </li>
+
+      <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
+        <i class="fas fa-balance-scale"></i>
+        <span>Escalas</span>
+      </li>
+
+    </ul>
+  </nav>
+
+  <div class="footer-menu" (click)="cerrarSesion()">
+    <i class="fas fa-home"></i>
+    <span>Cerrar sesión</span>
+  </div>
+</aside>
+
+  <div class="contenedor-principal">
+
+    <header class="barra-superior">
+      <h1 class="titulo-sistema">Sistema de Evaluación de Exámenes</h1>
+      <div class="iconos-barra">
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-user-circle"></i>
+      </div>
+    </header>
+
+    <main class="area-contenido">
+      <h2 class="titulo-seccion">CREAR EVALUACIÓN</h2>
+
+      <div class="tarjeta-formulario">
+
+        <div class="grupo-campo">
+          <label class="etiqueta">Nombre de Evaluación</label>
+          <input type="text" class="entrada" [(ngModel)]="evaluacion.nombre">
+        </div>
+
+        <div class="grupo-campo">
+          <label class="etiqueta">Tipo de Preguntas</label>
+          <select class="select-estado" [(ngModel)]="evaluacion.tipo">
+            <option value="multiple">Selección múltiple</option>
+            <option value="vf">Verdadero / Falso</option>
+            <option value="abierta">Abierta</option>
+          </select>
+        </div>
+
+        <div class="grupo-campo">
+          <label class="etiqueta">Cantidad de Preguntas</label>
+          <input type="number" class="entrada" [(ngModel)]="evaluacion.cantidad">
+        </div>
+
+        <div class="grupo-campo">
+          <label class="etiqueta">Escala</label>
+          <select class="select-estado" [(ngModel)]="evaluacion.escala">
+            <option value="">Seleccione escala</option>
+            <option *ngFor="let escala of escalas" [value]="escala.nombre">
+              {{ escala.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <div class="grupo-campo">
+          <label class="etiqueta">Docente</label>
+          <select class="select-estado" [(ngModel)]="evaluacion.docente">
+            <option value="">Seleccione docente</option>
+            <option *ngFor="let d of docentes" [value]="d.nombre">
+              {{ d.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <div class="botones-formulario">
+          <button class="boton guardar" (click)="crearEvaluacion()">
+            Crear Evaluación
+          </button>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+</div>

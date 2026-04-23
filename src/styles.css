@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Reseteo y fuente */
 body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1f1; }
 
@@ -38,3 +39,13 @@ body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
 .content-body { padding: 30px; overflow-y: auto; }
+=======
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+body{
+margin:0;
+font-family:'Poppins', sans-serif;
+background:#f4f6f9;
+}
+>>>>>>> 301906fa262fcb1aa87e932978248093548adada
