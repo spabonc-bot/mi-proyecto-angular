@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ESTO QUITA EL ERROR DE NGIF Y NGCLASS
-import { FormsModule } from '@angular/forms';   // ESTO QUITA EL ERROR DE NGMODEL
+import { CommonModule } from '@angular/common'; 
+import { FormsModule } from '@angular/forms';   
 
 @Component({
   selector: 'app-results',
   standalone: true,
-  imports: [CommonModule, FormsModule], // <--- ESTO ES LO MÁS IMPORTANTE
+  imports: [CommonModule, FormsModule], 
   templateUrl: './results.html',
   styleUrls: ['./results.css']
 })
@@ -22,7 +22,7 @@ export class ResultsComponent {
     { estudiante: 'jhoan muñoz', nota: 4.2 }
   ];
 
-  // FUNCIONES QUE EL HTML ESTÁ BUSCANDO
+  
   abrirFormulario() {
     this.mostrarFormulario = true;
   }
