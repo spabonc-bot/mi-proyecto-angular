@@ -4,25 +4,60 @@
 
     <h2>Registro de Estudiante</h2>
 
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="estudiante.nombre" placeholder="Ingrese su nombre">
+    <form autocomplete="off">
 
-    <label>Apellido</label>
-    <input type="text" [(ngModel)]="estudiante.apellido" placeholder="Ingrese su apellido">
+      <label>Nombre</label>
+      <input
+        type="text"
+        [(ngModel)]="estudiante.nombre"
+        name="nombre_registro"
+        autocomplete="off"
+        placeholder="Ingrese su nombre"
+      >
 
-    <label>Número de Identificación</label>
-    <input type="text" [(ngModel)]="estudiante.identificacion" placeholder="Ingrese su identificación">
+      <label>Apellido</label>
+      <input
+        type="text"
+        [(ngModel)]="estudiante.apellido"
+        name="apellido_registro"
+        autocomplete="off"
+        placeholder="Ingrese su apellido"
+      >
 
-    <label>Correo</label>
-    <input type="email" [(ngModel)]="estudiante.correo" placeholder="Ingrese su correo">
+      <label>Número de Identificación</label>
+      <input
+        type="text"
+        [(ngModel)]="estudiante.identificacion"
+        name="identificacion_registro"
+        autocomplete="off"
+        placeholder="Ingrese su identificación"
+      >
 
-    <label>Código de Acceso</label>
-    <input type="password" [(ngModel)]="estudiante.password" placeholder="Ingrese una contraseña">
+      <label>Correo</label>
+      <input
+        type="email"
+        [(ngModel)]="estudiante.correo"
+        name="correo_registro"
+        autocomplete="off"
+        placeholder="Ingrese su correo"
+      >
 
-    <div class="botones">
-      <button class="btn-principal" (click)="registrarEstudiante()">Registrarse</button>
-      <button class="btn-secundario" (click)="volverLogin()">Volver al login</button>
-    </div>
+      
+      <label>Contraseña</label>
+      <input
+        type="password"
+        [(ngModel)]="estudiante.password"
+        name="password_registro"
+        autocomplete="new-password"
+        placeholder="Ingrese una contraseña"
+      >
+
+      <div class="botones">
+        <button type="button" class="btn-principal" (click)="registrarEstudiante()">Registrarse</button>
+        <button type="button" class="btn-secundario" (click)="volverLogin()">Volver al login</button>
+      </div>
+
+    </form>
 
   </div>
 

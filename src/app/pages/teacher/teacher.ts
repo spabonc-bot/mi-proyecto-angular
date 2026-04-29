@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // 🔥 agregado ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -31,66 +31,105 @@ export class Teacher implements OnInit {
   indiceEdicion: number | null = null;
 
   constructor(
-  private router: Router,
-  private teacherService: TeacherService
-) {}
+    private router: Router,
+    private teacherService: TeacherService,
+    private cd: ChangeDetectorRef // refresco visual
+  ) {}
 
-  cargarDocentes() {
-    this.listaDocentes = this.teacherService.getDocentes();
+  async ngOnInit(): Promise<void> {
+    await this.teacherService.inicializarDatos();
+    this.cargarDocentes();
   }
 
-  validarFormulario(): string[] {
+  cargarDocentes(): void {
+   
+    this.listaDocentes = [...this.teacherService.getDocentes()];
+    this.cd.detectChanges();
+  }
+
+  validarFormulario(): string | null {
     const d = this.docente;
 
+   
+    d.nombre = d.nombre.trim();
+    d.identificacion = d.identificacion.trim();
+    d.correo = d.correo.trim();
+    d.titulo = d.titulo.trim();
+    d.password = d.password.trim();
+
     const reglas = [
-      () => !d.nombre && 'El nombre es obligatorio',
-      () => d.nombre.length < 3 && 'Nombre mínimo 3 caracteres',
+      () => !d.nombre && 'El nombre completo es obligatorio',
+      () => d.nombre && d.nombre.length < 3 && 'El nombre completo debe tener mínimo 3 caracteres',
 
-      () => !d.identificacion && 'Identificación obligatoria',
-      () => !/^[0-9]+$/.test(d.identificacion) && 'Solo números',
+      () => {
+        
+        // Se agrupan las validaciones de identificación para mostrar solo un error claro.
+        if (!d.identificacion) return 'La identificación es obligatoria';
+        if (!/^[0-9]+$/.test(d.identificacion)) return 'La identificación solo debe contener números';
+        if (d.identificacion.length < 5) return 'La identificación debe tener mínimo 5 dígitos';
+        return null;
+      },
+      
+      () => {
+        // Se agrupan las validaciones de correo para no saturar la alerta.
+        if (!d.correo) return 'El correo es obligatorio';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.correo)) return 'El correo no tiene un formato válido';
+        return null;
+      },
 
-      () => !d.correo && 'Correo obligatorio',
-      () => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.correo) && 'Correo inválido',
+      () => {
+        if (!d.titulo) return 'El título profesional es obligatorio';
+        return null;
+      },
 
-      () => !d.password && 'Contraseña obligatoria',
-      () => d.password.length < 6 && 'Mínimo 6 caracteres',
+      () => {
+        // Se agrupan las validaciones de contraseña para mostrar un solo mensaje.
+        if (!d.password) return 'La contraseña es obligatoria';
+        if (d.password.length < 6) return 'La contraseña debe tener mínimo 6 caracteres';
+        return null;
+      },
 
-      () =>
-        !this.editando &&
-        this.teacherService.existeIdentificacion(d.identificacion) &&
-        'Ya existe un docente con esa identificación'
+      () => {
+        // Ahora valida al editar
+        const duplicado = this.listaDocentes.some((doc, index) =>
+          doc.identificacion === d.identificacion &&
+          index !== this.indiceEdicion
+        );
+
+        return duplicado && 'Ya existe otro docente con esa identificación';
+      }
     ];
 
-    return reglas
-      .map(r => r())
-      .filter(m => m) as string[];
+    // Se devuelve solo el primer error encontrado para evitar una alerta demasiado larga.
+    for (const regla of reglas) {
+      const error = regla();
+      if (error) return error;
+    }
+
+    return null;
   }
 
-  guardarDocente() {
-    const errores = this.validarFormulario();
+  guardarDocente(): void {
+    const error = this.validarFormulario();
 
-    if (errores.length) {
-      this.mostrarError(errores.join('\n'));
+    if (error) {
+      this.mostrarError(error);
       return;
     }
 
-    if (this.editando) {
-      this.teacherService.actualizar(this.indiceEdicion!, this.docente);
+    if (this.editando && this.indiceEdicion !== null) {
+      this.teacherService.actualizar(this.indiceEdicion, { ...this.docente });
+      this.mostrarExito('Docente actualizado correctamente');
     } else {
-      this.teacherService.agregar(this.docente);
+      this.teacherService.agregar({ ...this.docente });
+      this.mostrarExito('Docente guardado correctamente');
     }
 
-    this.cargarDocentes();
     this.limpiarFormulario();
-
-    this.mostrarExito(
-      this.editando
-        ? 'Docente actualizado correctamente'
-        : 'Docente guardado correctamente'
-    );
+    this.cargarDocentes(); 
   }
 
-  editarDocente(index: number) {
+  editarDocente(index: number): void {
     this.docente = { ...this.listaDocentes[index] };
     this.editando = true;
     this.indiceEdicion = index;
@@ -98,7 +137,7 @@ export class Teacher implements OnInit {
     this.mostrarInfo(`Editando a ${this.docente.nombre}`);
   }
 
-  eliminarDocente(index: number) {
+  eliminarDocente(index: number): void {
     Swal.fire({
       title: '¿Eliminar docente?',
       text: `Se eliminará a ${this.listaDocentes[index].nombre}`,
@@ -111,18 +150,24 @@ export class Teacher implements OnInit {
 
       this.teacherService.eliminar(index);
 
-      this.cargarDocentes();
+ 
+      this.listaDocentes = this.listaDocentes.filter((_, i) => i !== index);
 
       if (this.editando && this.indiceEdicion === index) {
         this.limpiarFormulario();
       }
 
+      this.cd.detectChanges(); // 
+
       this.mostrarExito('Docente eliminado correctamente');
     });
   }
 
-  cancelar() {
-    if (!this.editando) return this.limpiarFormulario();
+  cancelar(): void {
+    if (!this.editando) {
+      this.limpiarFormulario();
+      return;
+    }
 
     Swal.fire({
       title: 'Cancelar edición',
@@ -132,11 +177,13 @@ export class Teacher implements OnInit {
       confirmButtonText: 'Sí',
       cancelButtonText: 'No'
     }).then(res => {
-      if (res.isConfirmed) this.limpiarFormulario();
+      if (res.isConfirmed) {
+        this.limpiarFormulario();
+      }
     });
   }
 
-  limpiarFormulario() {
+  limpiarFormulario(): void {
     this.docente = {
       nombre: '',
       identificacion: '',
@@ -150,7 +197,7 @@ export class Teacher implements OnInit {
     this.indiceEdicion = null;
   }
 
-  cerrarSesion() {
+  cerrarSesion(): void {
     Swal.fire({
       title: 'Cerrar sesión',
       text: '¿Desea salir del sistema?',
@@ -160,6 +207,8 @@ export class Teacher implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then(res => {
       if (!res.isConfirmed) return;
+
+      localStorage.removeItem('usuarioActivo');
 
       this.mostrarExito('Sesión cerrada').then(() => {
         this.router.navigate(['/']);
@@ -176,7 +225,7 @@ export class Teacher implements OnInit {
     });
   }
 
-  mostrarError(mensaje: string) {
+  mostrarError(mensaje: string): void {
     Swal.fire({
       icon: 'error',
       title: 'Error',
@@ -184,7 +233,7 @@ export class Teacher implements OnInit {
     });
   }
 
-  mostrarInfo(mensaje: string) {
+  mostrarInfo(mensaje: string): void {
     Swal.fire({
       icon: 'info',
       title: mensaje,
@@ -192,8 +241,4 @@ export class Teacher implements OnInit {
       showConfirmButton: false
     });
   }
-  async ngOnInit(): Promise<void> {
-  await this.teacherService.inicializarDatos();
-  this.cargarDocentes();
-}
 }

@@ -45,10 +45,15 @@
     <main class="area-contenido">
 
       <div class="tarjeta-info-evaluacion" *ngIf="evaluacion">
-        <h3>{{ evaluacion.nombre }}</h3>
+        <h3>Evaluación creada: {{ evaluacion.nombre }}</h3>
+        <p>Ahora registra las preguntas correspondientes a esta evaluación.</p>
         <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
         <p><strong>Tipo:</strong> {{ evaluacion.tipo }}</p>
-        <p><strong>Preguntas:</strong> {{ listaPreguntas.length }} / {{ totalPreguntas }}</p>
+        <p><strong>Preguntas registradas:</strong> {{ listaPreguntas.length }} / {{ totalPreguntas }}</p>
+
+        <div *ngIf="preguntasCompletas" class="mensaje-completo">
+          Ya completaste todas las preguntas. Puedes Guardar la evaluación.
+        </div>
       </div>
 
       <div class="tarjeta-formulario">
@@ -75,8 +80,20 @@
           <input [(ngModel)]="pregunta.respuesta" placeholder="Respuesta" class="entrada">
         </div>
 
-        <button class="boton guardar" (click)="guardarPregunta()">Guardar</button>
+        <button
+          class="boton guardar"
+          type="button"
+          (click)="guardarPregunta()"
+          [disabled]="preguntasCompletas && editandoIndex === -1">
+          {{ editandoIndex >= 0 ? 'Actualizar pregunta' : 'Guardar pregunta' }}
+        </button>
 
+      </div>
+
+      <div class="acciones-finalizar" *ngIf="preguntasCompletas">
+        <button class="boton finalizar" type="button" (click)="finalizarEvaluacion()">
+          Guardar evaluación
+        </button>
       </div>
 
       <div class="tarjeta-lista" *ngIf="listaPreguntas.length > 0">

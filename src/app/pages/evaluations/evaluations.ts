@@ -42,6 +42,7 @@ export class Evaluations implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.evaluationService.inicializarEvaluacion();
+    await this.teacherService.inicializarDatos();
     this.cargarDocentes();
     this.cargarEscalas();
   }
@@ -58,29 +59,64 @@ export class Evaluations implements OnInit {
     }
   }
 
-  crearEvaluacion(): void {
+  validarFormulario(): string | null {
     const e = this.evaluacion;
 
-    const errores = [
-      !e.nombre.trim() && 'Ingrese el nombre',
-      (!e.cantidad || e.cantidad <= 0) && 'Cantidad inválida',
-      !e.escala && 'Seleccione escala',
-      !e.docente && 'Seleccione docente'
-    ].filter(Boolean) as string[];
+    // Corrección: limpia espacios antes de validar y guardar.
+    e.nombre = e.nombre.trim();
+    e.escala = e.escala.trim();
+    e.docente = e.docente.trim();
 
-    if (errores.length) {
+    const reglas = [
+      () => !e.nombre && 'Ingrese el nombre de la evaluación',
+
+      () => {
+        if (!e.cantidad || Number(e.cantidad) <= 0) {
+          return 'Ingrese una cantidad válida de preguntas';
+        }
+
+        return null;
+      },
+
+      () => !e.escala && 'Seleccione una escala',
+      () => !e.docente && 'Seleccione un docente',
+
+      () => {
+        // Corrección: evita crear evaluaciones con el mismo nombre
+        const evaluaciones = this.evaluationService.getEvaluaciones();
+
+        const existe = evaluaciones.some((ev: EvaluationModel) =>
+          ev.nombre.trim().toLowerCase() === e.nombre.toLowerCase()
+        );
+
+        return existe && 'Ya existe una evaluación con ese nombre';
+      }
+    ];
+
+    // Mejora: muestra solo el primer error  no  juntos.
+    for (const regla of reglas) {
+      const error = regla();
+      if (error) return error;
+    }
+
+    return null;
+  }
+
+  crearEvaluacion(): void {
+    const error = this.validarFormulario();
+
+    if (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Campos incompletos',
-        text: errores.join(', ')
+        title: 'Revise el formulario',
+        text: error
       });
       return;
     }
 
-    e.cantidad = Number(e.cantidad);
-
     const evaluacionCompleta: EvaluationModel = {
-      ...e,
+      ...this.evaluacion,
+      cantidad: Number(this.evaluacion.cantidad),
       preguntas: []
     };
 
@@ -89,33 +125,34 @@ export class Evaluations implements OnInit {
     Swal.fire({
       icon: 'success',
       title: 'Evaluación creada',
-      timer: 1200,
-      showConfirmButton: false
+      text: 'Ahora agrega las preguntas correspondientes.',
+      confirmButtonText: 'Agregar preguntas'
     }).then(() => {
       this.router.navigate(['/preguntas']);
     });
   }
+
   cerrarSesion(): void {
-  Swal.fire({
-    title: 'Cerrar sesión',
-    text: '¿Desea salir del sistema?',
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: 'Salir',
-    cancelButtonText: 'Cancelar'
-  }).then((res) => {
-    if (!res.isConfirmed) return;
-
-    localStorage.removeItem('usuarioActivo');
-
     Swal.fire({
-      icon: 'success',
-      title: 'Sesión cerrada',
-      timer: 1200,
-      showConfirmButton: false
-    }).then(() => {
-      this.router.navigate(['/']);
+      title: 'Cerrar sesión',
+      text: '¿Desea salir del sistema?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Salir',
+      cancelButtonText: 'Cancelar'
+    }).then((res) => {
+      if (!res.isConfirmed) return;
+
+      localStorage.removeItem('usuarioActivo');
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Sesión cerrada',
+        timer: 1200,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/']);
+      });
     });
-  });
-}
+  }
 }

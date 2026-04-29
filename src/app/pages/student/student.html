@@ -7,18 +7,22 @@
           <i class="fas fa-user-graduate"></i>
           <span>Estudiantes</span>
         </li>
+
         <li class="item-menu" routerLink="/docentes" routerLinkActive="activo">
           <i class="fas fa-chalkboard-teacher"></i>
           <span>Docentes</span>
         </li>
+
         <li class="item-menu" routerLink="/evaluaciones" routerLinkActive="activo">
           <i class="fas fa-clipboard-list"></i>
           <span>Evaluaciones</span>
         </li>
+
         <li class="item-menu" routerLink="/resultados" routerLinkActive="activo">
           <i class="fas fa-id-card"></i>
           <span>Resultados</span>
         </li>
+
         <li class="item-menu" routerLink="/escalas" routerLinkActive="activo">
           <i class="fas fa-balance-scale"></i>
           <span>Escalas</span>
@@ -38,6 +42,7 @@
       <h1 class="titulo-sistema">
         Sistema de Evaluación - Estudiantes
       </h1>
+
       <div class="iconos-barra">
         <i class="fas fa-bell"></i>
         <i class="fas fa-user-circle"></i>
@@ -55,27 +60,52 @@
 
           <div class="grupo-campo">
             <label class="etiqueta">Nombre</label>
-            <input class="entrada" type="text" [(ngModel)]="estudiante.nombre" placeholder="Ingrese nombre">
+            <input
+              class="entrada"
+              type="text"
+              [(ngModel)]="estudiante.nombre"
+              placeholder="Ingrese nombre"
+            >
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Apellido</label>
-            <input class="entrada" type="text" [(ngModel)]="estudiante.apellido" placeholder="Ingrese apellido">
+            <input
+              class="entrada"
+              type="text"
+              [(ngModel)]="estudiante.apellido"
+              placeholder="Ingrese apellido"
+            >
           </div>
 
           <div class="grupo-campo">
-            <label class="etiqueta">Número de id</label>
-            <input class="entrada" type="text" [(ngModel)]="estudiante.identificacion" placeholder="Ingrese identificación">
+            <label class="etiqueta">Número de identificación</label>
+            <input
+              class="entrada"
+              type="text"
+              [(ngModel)]="estudiante.identificacion"
+              placeholder="Ingrese identificación"
+            >
           </div>
 
           <div class="grupo-campo">
             <label class="etiqueta">Correo</label>
-            <input class="entrada" type="email" [(ngModel)]="estudiante.correo" placeholder="Ingrese correo">
+            <input
+              class="entrada"
+              type="email"
+              [(ngModel)]="estudiante.correo"
+              placeholder="correo@ejemplo.com"
+            >
           </div>
 
           <div class="grupo-campo" *ngIf="!editando">
             <label class="etiqueta">Contraseña</label>
-            <input class="entrada" type="password" [(ngModel)]="estudiante.password" placeholder="Ingrese contraseña">
+            <input
+              class="entrada"
+              type="password"
+              [(ngModel)]="estudiante.password"
+              placeholder="Ingrese contraseña"
+            >
           </div>
 
           <div class="grupo-campo">
@@ -102,6 +132,7 @@
       <div class="tarjeta-lista">
         <div class="encabezado-lista">
           <h3>Últimos estudiantes</h3>
+
           <input
             class="input-busqueda"
             type="text"
@@ -128,20 +159,18 @@
                 <td>{{ est.nombre }} {{ est.apellido }}</td>
                 <td>{{ est.identificacion }}</td>
                 <td>{{ est.correo }}</td>
-                <td>{{ est.nota }}</td>
+                <td>{{ est.nota || '-' }}</td>
+
                 <td>
+                  <!--  estado real seleccionado en el formulario. -->
                   <span
                     class="estado-badge"
-                    [class.activo]="est.estadoResultado === 'aprobado'"
-                    [class.inactivo]="est.estadoResultado === 'reprobado'"
-                    [class.pendiente]="est.estadoResultado === 'pendiente'">
-                    {{
-                      est.estadoResultado === 'aprobado' ? 'Aprobado' :
-                      est.estadoResultado === 'reprobado' ? 'Reprobado' :
-                      'Pendiente'
-                    }}
+                    [class.activo]="est.estado === 'activo'"
+                    [class.inactivo]="est.estado === 'inactivo'">
+                    {{ est.estado }}
                   </span>
                 </td>
+
                 <td class="acciones">
                   <i class="fas fa-edit" (click)="editarEstudiante(i)" title="Editar"></i>
                   <i class="fas fa-trash" (click)="eliminarEstudiante(i)" title="Eliminar"></i>

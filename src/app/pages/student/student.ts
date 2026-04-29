@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { StudentService } from '../../services/student.service';
-import { StudentModel } from '../../models/student';
 
 @Component({
   selector: 'app-student',
@@ -23,8 +22,7 @@ export class Student implements OnInit {
     correo: '',
     password: '',
     estado: 'activo',
-    nota: 0,
-    estadoResultado: 'pendiente'
+    nota: 0
   };
 
   listaEstudiantes: any[] = [];
@@ -34,7 +32,8 @@ export class Student implements OnInit {
 
   constructor(
     private router: Router,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private cd: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +41,8 @@ export class Student implements OnInit {
   }
 
   cargarEstudiantes(): void {
-    this.listaEstudiantes = this.studentService.getEstudiantes();
+    
+    this.listaEstudiantes = [...this.studentService.getEstudiantes()];
   }
 
   get estudiantesFiltrados(): any[] {
@@ -53,45 +53,73 @@ export class Student implements OnInit {
     );
   }
 
-  guardarEstudiante(): void {
+  validarFormulario(): string | null {
     const e = this.estudiante;
 
-    const reglas = [
-      () => !e.nombre.trim() && 'El nombre es obligatorio',
-      () => !e.apellido.trim() && 'El apellido es obligatorio',
-      () => !e.identificacion.trim() && 'La identificación es obligatoria',
-      () => !/^[0-9]+$/.test(e.identificacion) && 'La identificación debe ser numérica',
-      () => e.identificacion.length < 5 && 'La identificación debe tener mínimo 5 dígitos',
-      () => !e.correo.trim() && 'El correo es obligatorio',
-      () => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.correo) && 'Correo inválido',
-      () => !this.editando && !e.password.trim() && 'La contraseña es obligatoria',
-      () => !this.editando && e.password.length < 6 && 'La contraseña debe tener mínimo 6 caracteres'
-    ];
+    e.nombre = e.nombre.trim();
+    e.apellido = e.apellido.trim();
+    e.identificacion = e.identificacion.trim();
+    e.correo = e.correo.trim();
 
-    const errores = reglas
-      .map(r => r())
-      .filter(m => m) as string[];
-
-    if (errores.length) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: errores.join(', ')
-      });
-      return;
+    if (!this.editando) {
+      e.password = e.password.trim();
     }
 
-    if (!this.editando && this.studentService.existeIdentificacion(e.identificacion)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Ya existe un estudiante con esa identificación'
-      });
+    const reglas = [
+      () => !e.nombre && 'El nombre es obligatorio',
+      () => e.nombre && e.nombre.length < 3 && 'El nombre debe tener mínimo 3 caracteres',
+
+      () => !e.apellido && 'El apellido es obligatorio',
+      () => e.apellido && e.apellido.length < 3 && 'El apellido debe tener mínimo 3 caracteres',
+
+      () => {
+        if (!e.identificacion) return 'La identificación es obligatoria';
+        if (!/^[0-9]+$/.test(e.identificacion)) return 'La identificación debe ser numérica';
+        if (e.identificacion.length < 5) return 'La identificación debe tener mínimo 5 dígitos';
+        return null;
+      },
+
+      () => {
+        if (!e.correo) return 'El correo es obligatorio';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.correo)) return 'El correo no es válido';
+        return null;
+      },
+
+      () => {
+        if (this.editando) return null;
+        if (!e.password) return 'La contraseña es obligatoria';
+        if (e.password.length < 6) return 'La contraseña debe tener mínimo 6 caracteres';
+        return null;
+      },
+
+      () => {
+        const duplicado = this.listaEstudiantes.some((est, index) =>
+          est.identificacion === e.identificacion &&
+          index !== this.indiceEdicion
+        );
+
+        return duplicado && 'Ya existe otro estudiante con esa identificación';
+      }
+    ];
+
+    for (const regla of reglas) {
+      const error = regla();
+      if (error) return error;
+    }
+
+    return null;
+  }
+
+  guardarEstudiante(): void {
+    const error = this.validarFormulario();
+
+    if (error) {
+      this.mostrarError(error);
       return;
     }
 
     if (this.editando && this.indiceEdicion !== null) {
-      this.studentService.actualizar(this.indiceEdicion, this.estudiante);
+      this.studentService.actualizar(this.indiceEdicion, { ...this.estudiante });
 
       Swal.fire({
         icon: 'success',
@@ -99,9 +127,8 @@ export class Student implements OnInit {
         timer: 1200,
         showConfirmButton: false
       });
-
     } else {
-      this.studentService.registrar(this.estudiante);
+      this.studentService.registrar({ ...this.estudiante });
 
       Swal.fire({
         icon: 'success',
@@ -111,7 +138,10 @@ export class Student implements OnInit {
       });
     }
 
+    //  ACTUALIZA SIN RECARGAR
     this.cargarEstudiantes();
+    this.cd.detectChanges();
+
     this.limpiarFormulario();
   }
 
@@ -143,16 +173,26 @@ export class Student implements OnInit {
       text: `${est.nombre} ${est.apellido}`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Eliminar'
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar'
     }).then(res => {
+
       if (!res.isConfirmed) return;
 
       this.studentService.eliminar(indexReal);
-      this.cargarEstudiantes();
+
+      
+      this.listaEstudiantes = this.listaEstudiantes.filter((_, i) => i !== indexReal);
+
+      this.cd.detectChanges(); // refresco
+
+      if (this.editando && this.indiceEdicion === indexReal) {
+        this.limpiarFormulario();
+      }
 
       Swal.fire({
         icon: 'success',
-        title: 'Eliminado',
+        title: 'Estudiante eliminado',
         timer: 1200,
         showConfirmButton: false
       });
@@ -171,16 +211,44 @@ export class Student implements OnInit {
       correo: '',
       password: '',
       estado: 'activo',
-      nota: 0,
-      estadoResultado: 'pendiente'
+      nota: 0
     };
 
     this.editando = false;
     this.indiceEdicion = null;
   }
 
+  mostrarError(mensaje: string): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Revise el formulario',
+      text: mensaje
+    });
+  }
+
   cerrarSesion(): void {
-    localStorage.removeItem('usuarioActivo');
-    this.router.navigate(['/']);
+    Swal.fire({
+      title: 'Cerrar sesión',
+      text: '¿Desea salir del sistema?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Salir',
+      cancelButtonText: 'Cancelar'
+    }).then(res => {
+
+      if (!res.isConfirmed) return;
+
+      localStorage.removeItem('usuarioActivo');
+      localStorage.removeItem('evaluacionActiva');
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Sesión cerrada correctamente',
+        timer: 1200,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/']);
+      });
+    });
   }
 }

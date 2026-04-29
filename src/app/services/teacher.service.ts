@@ -77,4 +77,11 @@ export class TeacherService {
       d => d.identificacion === identificacion
     );
   }
+  buscarPorCredenciales(identificacion: string, password: string): TeacherModel | null {
+  return this.getDocentes().find(
+    docente =>
+      docente.identificacion === identificacion &&
+      docente.password === password
+  ) || null;
+}
 }

@@ -4,26 +4,46 @@
 
     <h2>Iniciar Sesión</h2>
 
-    <label>Numero de Identificacion</label>
-    <input type="text" [(ngModel)]="identificacion">
+    
+    <form autocomplete="off">
 
-    <label>Codigo de Acceso</label>
-    <input type="password" [(ngModel)]="password">
+      <label>Número de Identificación</label>
+      <input
+        type="text"
+        [(ngModel)]="identificacion"
+        name="identificacion_login"
+        autocomplete="off"
+      >
 
-    <div class="opciones">
-      <label>
-        <input type="radio" name="rol" value="docente" [(ngModel)]="rol"> Docente
-      </label>
+      <label>Contraseña</label>
+      <input
+        type="password" [(ngModel)]="password"
+        name="password_login"
+        autocomplete="new-password"
+      >
 
-      <label>
-        <input type="radio" name="rol" value="estudiante" [(ngModel)]="rol"> Estudiante
-      </label>
-    </div>
+      <div class="opciones">
+        <label>
+          <input
+            type="radio" name="rol_login" value="docente" [(ngModel)]="rol"
+          >
+          Docente
+        </label>
 
-    <button type="button" (click)="iniciarSesion()">Iniciar Sesion</button>
+        <label>
+          <input
+            type="radio" name="rol_login" value="estudiante" [(ngModel)]="rol"
+          >
+          Estudiante
+        </label>
+      </div>
 
-    <p class="registro-texto">¿No tienes cuenta?</p>
-    <button type="button" (click)="irRegistro()">Registrarse</button>
+      <button type="button" (click)="iniciarSesion()">Iniciar Sesión</button>
+
+      <p class="registro-texto">¿No tienes cuenta?</p>
+      <button type="button" class="btn-secundario" (click)="irRegistro()">Registrarse</button>
+
+    </form>
 
   </div>
 
