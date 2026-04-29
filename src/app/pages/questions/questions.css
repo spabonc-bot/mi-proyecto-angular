@@ -279,3 +279,33 @@
 .fa-eye:hover {
   color: #3498db;
 }
+.mensaje-completo {
+  margin-top: 12px;
+  background: #d4edda;
+  color: #155724;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.acciones-finalizar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.finalizar {
+  background: #1c2d4f;
+  color: white;
+}
+
+.finalizar:hover {
+  background: #152240;
+  transform: scale(1.04);
+}
+
+.boton:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+}

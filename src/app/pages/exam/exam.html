@@ -1,12 +1,19 @@
 <div class="contenedor-examen">
 
+  
   <div class="cabecera-examen cabecera-bienvenida">
     <div>
       <h2>Sistema de Evaluación</h2>
       <p class="saludo"><strong>Bienvenido:</strong> {{ nombreUsuario }}</p>
     </div>
+
+    
+    <button class="btn-salir-header" (click)="confirmarCerrarSesion()">
+      Cerrar sesión
+    </button>
   </div>
 
+  
   <div *ngIf="!evaluacion">
 
     <div class="cabecera-examen">
@@ -17,13 +24,17 @@
     <div *ngIf="evaluacionesDisponibles.length > 0; else vacio" class="lista-evaluaciones">
       <div class="tarjeta-evaluacion" *ngFor="let e of evaluacionesDisponibles">
         <h3>{{ e.nombre }}</h3>
-        <p><strong>Docente:</strong> {{ e.docente }}</p>
-        <p><strong>Tipo:</strong> {{ e.tipo }}</p>
-        <p><strong>Escala:</strong> {{ e.escala }}</p>
-        <p><strong>Preguntas:</strong> {{ e.preguntas?.length || 0 }}</p>
+
+        <div class="info-tarjeta">
+          <p><strong>Docente:</strong> {{ e.docente }}</p>
+          <p><strong>Tipo:</strong> {{ e.tipo }}</p>
+          <p><strong>Escala:</strong> {{ e.escala }}</p>
+          <p><strong>Preguntas:</strong> {{ e.preguntas?.length || 0 }}</p>
+        </div>
 
         <button
           class="btn-enviar"
+          type="button"
           [disabled]="yaPresentoEvaluacion(e)"
           (click)="seleccionarEvaluacion(e)">
           {{ yaPresentoEvaluacion(e) ? 'Ya presentado' : 'Presentar evaluación' }}
@@ -40,10 +51,12 @@
 
   </div>
 
+ 
   <div *ngIf="evaluacion">
 
     <div class="cabecera-examen">
       <h2>{{ evaluacion.nombre }}</h2>
+
       <div class="info-evaluacion">
         <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
         <p><strong>Tipo:</strong> {{ evaluacion.tipo }}</p>
@@ -55,6 +68,7 @@
     <div class="pregunta-box" *ngFor="let p of evaluacion.preguntas; let i = index">
       <h3>{{ i + 1 }}. {{ p.enunciado }}</h3>
 
+     
       <div *ngIf="evaluacion.tipo === 'multiple'" class="opciones">
         <label class="opcion-item">
           <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'A')">
@@ -77,6 +91,7 @@
         </label>
       </div>
 
+      
       <div *ngIf="evaluacion.tipo === 'vf'" class="opciones">
         <label class="opcion-item">
           <input type="radio" [name]="'pregunta' + i" (change)="responder(i, 'V')">
@@ -89,6 +104,7 @@
         </label>
       </div>
 
+     
       <div *ngIf="evaluacion.tipo === 'abierta'">
         <input
           type="text"
@@ -99,10 +115,15 @@
       </div>
     </div>
 
+    
     <div class="acciones-examen">
-      <button class="btn-enviar" (click)="finalizarExamen()">Enviar examen</button>
-      <button class="btn-volver" (click)="volverASeleccionar()">Cambiar evaluación</button>
-      <button class="btn-salir" (click)="cerrarSesion()">Salir</button>
+      <button class="btn-enviar" type="button" (click)="finalizarExamen()">
+        Enviar examen
+      </button>
+
+      <button class="btn-volver" type="button" (click)="confirmarAbandonarExamen()">
+        Abandonar examen
+      </button>
     </div>
 
   </div>

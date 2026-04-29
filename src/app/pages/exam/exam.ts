@@ -46,6 +46,7 @@ export class Exam {
       'Usuario';
 
     const listaEvaluaciones = JSON.parse(localStorage.getItem('evaluaciones') || '[]');
+
     this.evaluacionesDisponibles = listaEvaluaciones.filter(
       (e: any) => e.preguntas && e.preguntas.length > 0
     );
@@ -102,8 +103,10 @@ export class Exam {
     const total = this.evaluacion.preguntas.length;
 
     let notaMaxima = 5;
+
     if (this.evaluacion.escala) {
       const partes = String(this.evaluacion.escala).split('-');
+
       if (partes.length > 1) {
         notaMaxima = Number(partes[1].trim()) || 5;
       }
@@ -121,7 +124,7 @@ export class Exam {
       docente: this.evaluacion.docente,
       totalPreguntas: total,
       correctas: correctas,
-      nota: nota.toFixed(2),
+      nota: Number(nota.toFixed(2)),
       fecha: new Date().toLocaleString()
     };
 
@@ -130,42 +133,89 @@ export class Exam {
     localStorage.setItem('resultados', JSON.stringify(historial));
 
     Swal.fire({
-  icon: 'success',
-  title: 'Examen finalizado',
-  html: `
-    <p>Has completado la evaluación correctamente.</p>
-    <p><strong>Tu nota fue:</strong> ${nota.toFixed(2)}</p>
-  `,
-  confirmButtonText: 'Aceptar'
-}).then(() => {
-  localStorage.removeItem('evaluacionActiva');
-  this.evaluacion = null;
-  this.respuestas = [];
-  this.cargarExamen();
-});
+      icon: 'success',
+      title: 'Examen finalizado',
+      html: `
+        <p>Has completado la evaluación correctamente.</p>
+        <p><strong>Tu nota fue:</strong> ${nota.toFixed(2)}</p>
+      `,
+      confirmButtonText: 'Aceptar'
+    }).then(() => {
+      
+      localStorage.removeItem('evaluacionActiva');
+      this.evaluacion = null;
+      this.respuestas = [];
+      this.cargarExamen();
+
+      
+    });
   }
-yaPresentoEvaluacion(evaluacion: any): boolean {
-  const historial = JSON.parse(localStorage.getItem('resultados') || '[]');
 
-  const identificacion =
-    this.estudiante?.identificacion ||
-    this.estudiante?.data?.identificacion ||
-    '';
+  yaPresentoEvaluacion(evaluacion: any): boolean {
+    const historial = JSON.parse(localStorage.getItem('resultados') || '[]');
 
-  return historial.some((r: any) =>
-    r.identificacion === identificacion &&
-    r.evaluacion === evaluacion.nombre
-  );
-}
+    const identificacion =
+      this.estudiante?.identificacion ||
+      this.estudiante?.data?.identificacion ||
+      '';
+
+    return historial.some((r: any) =>
+      r.identificacion === identificacion &&
+      r.evaluacion === evaluacion.nombre
+    );
+  }
+
   volverASeleccionar(): void {
     this.evaluacion = null;
     this.respuestas = [];
     localStorage.removeItem('evaluacionActiva');
   }
 
+  confirmarAbandonarExamen(): void {
+
+    // abandonar el examen sin guardar respuestas.
+    Swal.fire({
+      title: 'Abandonar examen',
+      text: 'Si abandonas el examen, se perderán las respuestas no enviadas.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, abandonar',
+      cancelButtonText: 'Continuar examen'
+    }).then(res => {
+      if (!res.isConfirmed) return;
+
+      this.volverASeleccionar();
+    });
+  }
+
+  confirmarCerrarSesion(): void {
+   
+    // Se agrega un control claro de salida para el estudiante.
+    Swal.fire({
+      title: 'Cerrar sesión',
+      text: '¿Deseas cerrar tu sesión?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then(res => {
+      if (!res.isConfirmed) return;
+
+      this.cerrarSesion();
+    });
+  }
+
   cerrarSesion(): void {
     localStorage.removeItem('usuarioActivo');
     localStorage.removeItem('evaluacionActiva');
-    this.router.navigate(['/']);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Sesión cerrada',
+      timer: 1200,
+      showConfirmButton: false
+    }).then(() => {
+      this.router.navigate(['/']);
+    });
   }
 }

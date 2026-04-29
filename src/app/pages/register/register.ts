@@ -24,30 +24,54 @@ export class Register {
 
   constructor(private router: Router) {}
 
-  registrarEstudiante() {
+  registrarEstudiante(): void {
+    // limpian espacios antes de validar 
+    this.estudiante.nombre = this.estudiante.nombre.trim();
+    this.estudiante.apellido = this.estudiante.apellido.trim();
+    this.estudiante.identificacion = this.estudiante.identificacion.trim();
+    this.estudiante.correo = this.estudiante.correo.trim();
+    this.estudiante.password = this.estudiante.password.trim();
+
     const e = this.estudiante;
 
     const reglas = [
-      () => !e.nombre.trim() && 'El nombre es obligatorio',
-      () => !e.apellido.trim() && 'El apellido es obligatorio',
-      () => !e.identificacion.trim() && 'La identificación es obligatoria',
-      () => !/^[0-9]+$/.test(e.identificacion) && 'La identificación debe ser numérica',
-      () => e.identificacion.length < 5 && 'La identificación debe tener mínimo 5 dígitos',
-      () => !e.correo.trim() && 'El correo es obligatorio',
-      () => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.correo) && 'Correo inválido',
-      () => !e.password.trim() && 'La contraseña es obligatoria',
-      () => e.password.length < 6 && 'La contraseña debe tener mínimo 6 caracteres'
-    ];
+  () => !e.nombre && 'El nombre es obligatorio',
+  () => !e.apellido && 'El apellido es obligatorio',
+
+  () => {
+    if (!e.identificacion) return 'La identificación es obligatoria';
+    if (!/^[0-9]+$/.test(e.identificacion)) return 'La identificación debe ser numérica';
+    if (e.identificacion.length < 5) return 'La identificación debe tener mínimo 5 dígitos';
+    return null;
+  },
+
+  () => {
+    if (!e.correo) return 'El correo es obligatorio';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.correo)) return 'Correo inválido';
+    return null;
+  },
+
+  () => {
+    if (!e.password) return 'La contraseña es obligatoria';
+    if (e.password.length < 6) return 'La contraseña debe tener mínimo 6 caracteres';
+    return null;
+  }
+];
 
     const errores = reglas
       .map(r => r())
-      .filter(m => m) as string[];
+      .filter(mensaje => mensaje) as string[];
 
     if (errores.length) {
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: errores.join(', ')
+        title: 'Revise los campos',
+        // saturacion errores
+        html: `
+          <ul style="text-align:left">
+            ${errores.map(error => `<li>${error}</li>`).join('')}
+          </ul>
+        `
       });
       return;
     }
@@ -61,7 +85,7 @@ export class Register {
     if (existe) {
       Swal.fire({
         icon: 'error',
-        title: 'Error',
+        title: 'Identificación duplicada',
         text: 'Ya existe un estudiante con esa identificación'
       });
       return;
@@ -75,13 +99,14 @@ export class Register {
       title: 'Registro exitoso',
       text: 'Ahora puedes iniciar sesión'
     }).then(() => {
-      this.router.navigate(['/login']);
+      
+      this.limpiarFormulario();
+      this.router.navigate(['/']);
     });
-
-    this.limpiarFormulario();
   }
 
-  limpiarFormulario() {
+  limpiarFormulario(): void {
+    
     this.estudiante = {
       nombre: '',
       apellido: '',
@@ -92,7 +117,9 @@ export class Register {
     };
   }
 
-  volverLogin() {
+  volverLogin(): void {
+    
+    this.limpiarFormulario();
     this.router.navigate(['/']);
   }
 }
