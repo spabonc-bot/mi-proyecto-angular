@@ -25,11 +25,17 @@ export class Questions implements OnInit {
     opcionB: '',
     opcionC: '',
     opcionD: '',
-    respuesta: ''
+    respuesta: '',
+
+    
+    tiempo: null
   };
 
   listaPreguntas: QuestionModel[] = [];
   editandoIndex: number = -1;
+
+
+  usarTiempoPregunta: boolean = false;
 
   constructor(
     private router: Router,
@@ -57,8 +63,19 @@ export class Questions implements OnInit {
 
     this.evaluacion = data;
 
-    
-    this.listaPreguntas = [...(data.preguntas || [])];
+   
+    this.listaPreguntas = [...(data.preguntas || [])].map((p: any) => ({
+      enunciado: p.enunciado || '',
+      opcionA: p.opcionA || '',
+      opcionB: p.opcionB || '',
+      opcionC: p.opcionC || '',
+      opcionD: p.opcionD || '',
+      respuesta: p.respuesta || '',
+      tiempo:
+        p.tiempo == null || p.tiempo === ''
+          ? null
+          : Number(p.tiempo)
+    }));
 
     this.cd.detectChanges();
   }
@@ -69,6 +86,17 @@ export class Questions implements OnInit {
 
   get preguntasCompletas(): boolean {
     return this.listaPreguntas.length === this.totalPreguntas;
+  }
+
+  cambiarUsoTiempo(activo: boolean): void {
+
+    // Si el docente activa el tiempo, aparece el campo vacío.
+    // Si lo desactiva, la pregunta queda sin límite de tiempo.
+    this.usarTiempoPregunta = activo;
+
+    if (!activo) {
+      this.pregunta.tiempo = null;
+    }
   }
 
   guardarPregunta(): void {
@@ -110,7 +138,6 @@ export class Questions implements OnInit {
     this.guardarEnStorage();
     this.limpiarFormulario();
 
-    
     this.cd.detectChanges();
   }
 
@@ -118,6 +145,7 @@ export class Questions implements OnInit {
     const p = this.pregunta;
     const tipo = this.evaluacion.tipo;
 
+    // Limpia espacios antes de validar y guardar.
     p.enunciado = p.enunciado.trim();
     p.opcionA = (p.opcionA || '').trim();
     p.opcionB = (p.opcionB || '').trim();
@@ -125,8 +153,27 @@ export class Questions implements OnInit {
     p.opcionD = (p.opcionD || '').trim();
     p.respuesta = p.respuesta.trim().toUpperCase();
 
+
+    const tiempo = Number(p.tiempo);
+    const tiempoVacio = p.tiempo === null;
+
     const reglas = [
       () => !p.enunciado && 'Ingrese la pregunta',
+
+      () =>
+        this.usarTiempoPregunta &&
+        tiempoVacio &&
+        'Ingrese el tiempo de la pregunta',
+
+      () =>
+        this.usarTiempoPregunta &&
+        (!tiempo || tiempo <= 0) &&
+        'Ingrese un tiempo válido para la pregunta',
+
+      () =>
+        this.usarTiempoPregunta &&
+        tiempo > 300 &&
+        'El tiempo máximo permitido por pregunta es de 300 segundos',
 
       () => {
         if (tipo !== 'multiple') return null;
@@ -163,16 +210,20 @@ export class Questions implements OnInit {
       }
     ];
 
-    return reglas
+    const errores = reglas
       .map(regla => regla())
       .filter(mensaje => mensaje) as string[];
+
+  
+    if (errores.length === 0) {
+      p.tiempo = this.usarTiempoPregunta ? tiempo : null;
+    }
+
+    return errores;
   }
 
   guardarEnStorage(): void {
-    
     this.evaluacion.preguntas = [...this.listaPreguntas];
-
-    
     this.evaluationService.guardarEvaluacion(this.evaluacion);
   }
 
@@ -183,14 +234,30 @@ export class Questions implements OnInit {
       opcionB: '',
       opcionC: '',
       opcionD: '',
-      respuesta: ''
+      respuesta: '',
+
+
+      tiempo: null
     };
 
+    this.usarTiempoPregunta = false;
     this.editandoIndex = -1;
   }
 
   editarPregunta(index: number): void {
-    this.pregunta = { ...this.listaPreguntas[index] };
+    const preguntaSeleccionada = this.listaPreguntas[index];
+
+    this.pregunta = {
+      ...preguntaSeleccionada,
+      tiempo:
+        preguntaSeleccionada.tiempo === null
+          ? null
+          : Number(preguntaSeleccionada.tiempo)
+    };
+
+    
+    this.usarTiempoPregunta = this.pregunta.tiempo !== null;
+
     this.editandoIndex = index;
   }
 
@@ -205,7 +272,6 @@ export class Questions implements OnInit {
     }).then(res => {
       if (!res.isConfirmed) return;
 
-      // elimina visualmente 
       this.listaPreguntas = this.listaPreguntas.filter((_, i) => i !== index);
 
       this.guardarEnStorage();
@@ -234,7 +300,10 @@ export class Questions implements OnInit {
       `;
     }
 
-    contenido += `<b>Respuesta:</b> ${p.respuesta}`;
+    contenido += `
+      <b>Respuesta:</b> ${p.respuesta}<br>
+      <b>Tiempo:</b> ${p.tiempo === null ? 'Sin límite' : p.tiempo + ' segundos'}
+    `;
 
     Swal.fire({
       title: 'Detalle de la pregunta',

@@ -27,6 +27,9 @@ body {
 
 .cabecera-bienvenida {
   border-left: 6px solid #7a5af8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .cabecera-examen h2 {
@@ -44,6 +47,20 @@ body {
 .saludo {
   font-size: 16px;
   color: #1c2d4f;
+}
+
+.btn-salir-header {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-salir-header:hover {
+  background: #c0392b;
 }
 
 .lista-evaluaciones {
@@ -76,10 +93,6 @@ body {
   margin: 8px 0;
 }
 
-.tarjeta-examen-activo {
-  border-top: 6px solid #1c2d4f;
-}
-
 .info-evaluacion {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -92,6 +105,25 @@ body {
   background: #f4f6fb;
   padding: 12px 14px;
   border-radius: 10px;
+}
+
+.temporizador-box {
+  max-width: 1100px;
+  margin: 0 auto 20px;
+  background: #1c2d4f;
+  color: white;
+  padding: 18px 24px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.temporizador-box p {
+  margin: 0;
 }
 
 .pregunta-box {
@@ -162,7 +194,7 @@ body {
 
 .acciones-examen {
   max-width: 1100px;
-  margin: 35px auto 0;
+  margin: 25px auto 0;
   display: flex;
   gap: 18px;
   justify-content: center;
@@ -211,7 +243,9 @@ body {
   transform: scale(1.05);
 }
 
-.btn-enviar:disabled {
+.btn-enviar:disabled,
+.btn-volver:disabled,
+.btn-salir:disabled {
   background: #95a5a6;
   cursor: not-allowed;
   transform: none;
@@ -237,6 +271,12 @@ body {
     padding: 22px;
   }
 
+  .cabecera-bienvenida {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
   .cabecera-examen h2 {
     font-size: 20px;
   }
@@ -244,6 +284,11 @@ body {
   .tarjeta-evaluacion h3,
   .pregunta-box h3 {
     font-size: 19px;
+  }
+
+  .temporizador-box {
+    flex-direction: column;
+    text-align: center;
   }
 
   .acciones-examen {
@@ -261,23 +306,4 @@ body {
   .info-evaluacion {
     grid-template-columns: 1fr;
   }
-}
-.cabecera-bienvenida {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.btn-salir-header {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn-salir-header:hover {
-  background: #c0392b;
 }

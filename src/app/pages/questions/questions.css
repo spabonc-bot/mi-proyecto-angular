@@ -309,3 +309,23 @@
   cursor: not-allowed;
   transform: none;
 }
+
+input[type="number"].entrada {
+  font-weight: 600;
+}
+.opcion-tiempo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f4f6fb;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  color: #1c2d4f;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.opcion-tiempo input {
+  transform: scale(1.1);
+}
