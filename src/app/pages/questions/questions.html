@@ -58,7 +58,27 @@
 
       <div class="tarjeta-formulario">
 
-        <input [(ngModel)]="pregunta.enunciado" placeholder="Pregunta" class="entrada">
+        <input
+          [(ngModel)]="pregunta.enunciado"
+          placeholder="Pregunta"
+          class="entrada">
+
+        <label class="opcion-tiempo">
+          <input
+            type="checkbox"
+            [checked]="usarTiempoPregunta"
+            (change)="cambiarUsoTiempo($any($event.target).checked)">
+          Activar tiempo para esta pregunta
+        </label>
+
+        <input
+          *ngIf="usarTiempoPregunta"
+          type="number"
+          min="1"
+          max="300"
+          [(ngModel)]="pregunta.tiempo"
+          placeholder="Tiempo de la pregunta en segundos"
+          class="entrada">
 
         <div *ngIf="evaluacion.tipo === 'multiple'">
           <input [(ngModel)]="pregunta.opcionA" placeholder="Opción A" class="entrada">
@@ -112,6 +132,7 @@
               </ng-container>
 
               <th>Respuesta</th>
+              <th>Tiempo</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -128,7 +149,15 @@
                 <td>{{ p.opcionD }}</td>
               </ng-container>
 
-              <td>{{ p.respuesta }}</td>
+              <td>
+                <span class="badge-respuesta">
+                  {{ p.respuesta }}
+                </span>
+              </td>
+
+              <td>
+                {{ p.tiempo === null ? 'Sin límite' : p.tiempo + ' segundos' }}
+              </td>
 
               <td class="acciones">
                 <i class="fas fa-eye" (click)="verPregunta(i)" title="Ver"></i>
@@ -139,6 +168,11 @@
           </tbody>
         </table>
 
+      </div>
+
+      <div class="mensaje-vacio" *ngIf="listaPreguntas.length === 0">
+        <i class="fas fa-question-circle"></i>
+        <p>Aún no hay preguntas registradas para esta evaluación.</p>
       </div>
 
     </main>

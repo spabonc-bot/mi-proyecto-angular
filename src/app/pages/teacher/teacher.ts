@@ -157,7 +157,7 @@ export class Teacher implements OnInit {
         this.limpiarFormulario();
       }
 
-      this.cd.detectChanges(); // 
+      this.cd.detectChanges();  
 
       this.mostrarExito('Docente eliminado correctamente');
     });
