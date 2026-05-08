@@ -93,6 +93,7 @@
   flex: 1;
   background: #e8e8e8;
   padding: 35px;
+  box-sizing: border-box;
 }
 
 .titulo-seccion {
@@ -108,7 +109,14 @@
   padding: 35px 50px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  max-width: 700px;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.tarjeta-formulario form {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 
@@ -138,6 +146,7 @@
   padding: 0 12px;
   font-family: 'Poppins', sans-serif;
   transition: 0.2s;
+  box-sizing: border-box;
 }
 
 
