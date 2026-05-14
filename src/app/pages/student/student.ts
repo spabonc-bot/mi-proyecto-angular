@@ -5,10 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { StudentService } from '../../services/student.service';
-<<<<<<< HEAD
 import { COURSES } from '../../data/courses';
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
 @Component({
   selector: 'app-student',
@@ -26,12 +23,8 @@ export class Student implements OnInit {
     correo: '',
     password: '',
     estado: 'activo',
-<<<<<<< HEAD
     nota: 0,
     curso: ''
-=======
-    nota: 0
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
   };
 
   listaEstudiantes: any[] = [];
@@ -39,7 +32,6 @@ export class Student implements OnInit {
   editando: boolean = false;
   indiceEdicion: number | null = null;
 
-<<<<<<< HEAD
   // Agregado ejercicio:
   courses: string[] = COURSES;
 
@@ -47,12 +39,6 @@ export class Student implements OnInit {
     private router: Router,
     private studentService: StudentService,
     private cd: ChangeDetectorRef
-=======
-  constructor(
-    private router: Router,
-    private studentService: StudentService,
-    private cd: ChangeDetectorRef 
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
   ) {}
 
   ngOnInit(): void {
@@ -60,10 +46,6 @@ export class Student implements OnInit {
   }
 
   cargarEstudiantes(): void {
-<<<<<<< HEAD
-=======
-    
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     this.listaEstudiantes = [...this.studentService.getEstudiantes()];
   }
 
@@ -71,12 +53,8 @@ export class Student implements OnInit {
     return this.listaEstudiantes.filter(est =>
       `${est.nombre} ${est.apellido}`.toLowerCase().includes(this.filtro.toLowerCase()) ||
       est.identificacion.toLowerCase().includes(this.filtro.toLowerCase()) ||
-<<<<<<< HEAD
       est.correo.toLowerCase().includes(this.filtro.toLowerCase()) ||
       String(est.curso || '').toLowerCase().includes(this.filtro.toLowerCase())
-=======
-      est.correo.toLowerCase().includes(this.filtro.toLowerCase())
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     );
   }
 
@@ -87,10 +65,7 @@ export class Student implements OnInit {
     e.apellido = e.apellido.trim();
     e.identificacion = e.identificacion.trim();
     e.correo = e.correo.trim();
-<<<<<<< HEAD
     e.curso = String(e.curso || '').trim();
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
     if (!this.editando) {
       e.password = e.password.trim();
@@ -116,15 +91,12 @@ export class Student implements OnInit {
         return null;
       },
 
-<<<<<<< HEAD
       // Agregado ejercicio:
       () => {
         if (!e.curso) return 'Seleccione el curso del estudiante';
         return null;
       },
 
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
       () => {
         if (this.editando) return null;
         if (!e.password) return 'La contraseña es obligatoria';
@@ -178,11 +150,7 @@ export class Student implements OnInit {
       });
     }
 
-<<<<<<< HEAD
     // ACTUALIZA SIN RECARGAR
-=======
-    //  ACTUALIZA SIN RECARGAR
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     this.cargarEstudiantes();
     this.cd.detectChanges();
 
@@ -198,7 +166,6 @@ export class Student implements OnInit {
 
     if (indexReal === -1) return;
 
-<<<<<<< HEAD
     this.estudiante = {
       ...this.listaEstudiantes[indexReal],
 
@@ -207,9 +174,6 @@ export class Student implements OnInit {
       curso: this.listaEstudiantes[indexReal].curso || ''
     };
 
-=======
-    this.estudiante = { ...this.listaEstudiantes[indexReal] };
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     this.editando = true;
     this.indiceEdicion = indexReal;
   }
@@ -236,16 +200,9 @@ export class Student implements OnInit {
 
       this.studentService.eliminar(indexReal);
 
-<<<<<<< HEAD
       this.listaEstudiantes = this.listaEstudiantes.filter((_, i) => i !== indexReal);
 
       this.cd.detectChanges();
-=======
-      
-      this.listaEstudiantes = this.listaEstudiantes.filter((_, i) => i !== indexReal);
-
-      this.cd.detectChanges(); // refresco
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
       if (this.editando && this.indiceEdicion === indexReal) {
         this.limpiarFormulario();
@@ -272,12 +229,8 @@ export class Student implements OnInit {
       correo: '',
       password: '',
       estado: 'activo',
-<<<<<<< HEAD
       nota: 0,
       curso: ''
-=======
-      nota: 0
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     };
 
     this.editando = false;

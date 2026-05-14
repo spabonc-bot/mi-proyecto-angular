@@ -50,14 +50,10 @@ export class Exam implements OnDestroy {
       return;
     }
 
-<<<<<<< HEAD
     const usuarioActivo = JSON.parse(dataUsuario);
 
     // Agregado ejercicio:
     this.estudiante = this.obtenerEstudianteCompleto(usuarioActivo);
-=======
-    this.estudiante = JSON.parse(dataUsuario);
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
     this.nombreUsuario =
       this.estudiante?.nombre ||
@@ -65,15 +61,6 @@ export class Exam implements OnDestroy {
       this.estudiante?.usuario?.nombre ||
       'Usuario';
 
-<<<<<<< HEAD
-=======
-    const listaEvaluaciones = JSON.parse(localStorage.getItem('evaluaciones') || '[]');
-
-    this.evaluacionesDisponibles = listaEvaluaciones.filter(
-      (e: any) => e.preguntas && e.preguntas.length > 0
-    );
-
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     localStorage.removeItem('evaluacionActiva');
 
     this.evaluacion = null;
@@ -81,7 +68,6 @@ export class Exam implements OnDestroy {
     this.preguntaActual = 0;
     this.tiempoRestante.set(null);
     this.evaluacionBloqueada = false;
-<<<<<<< HEAD
 
     // Agregado ejercicio:
     this.cargarEvaluacionesDisponibles();
@@ -154,8 +140,6 @@ export class Exam implements OnDestroy {
   
   normalizar(valor: any): string {
     return String(valor || '').trim().toLowerCase();
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
   }
 
   seleccionarEvaluacion(evaluacion: any): void {
@@ -187,19 +171,11 @@ export class Exam implements OnDestroy {
     const pregunta = this.evaluacion.preguntas[this.preguntaActual];
     const tiempo = Number(pregunta?.tiempo);
 
-<<<<<<< HEAD
-=======
-    // Si la pregunta no tiene tiempo, queda sin límite.
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     if (!tiempo || tiempo <= 0) {
       this.tiempoRestante.set(null);
       return;
     }
 
-<<<<<<< HEAD
-=======
-    // Muestra el tiempo inicial de la pregunta.
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     this.tiempoRestante.set(tiempo);
 
     this.temporizador = setInterval(() => {
@@ -395,17 +371,9 @@ export class Exam implements OnDestroy {
       this.preguntaActual = 0;
       this.tiempoRestante.set(null);
 
-<<<<<<< HEAD
       // Agregado ejercicio:
     
       this.cargarEvaluacionesDisponibles();
-=======
-      const listaEvaluaciones = JSON.parse(localStorage.getItem('evaluaciones') || '[]');
-
-      this.evaluacionesDisponibles = listaEvaluaciones.filter(
-        (e: any) => e.preguntas && e.preguntas.length > 0
-      );
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
       this.evaluacionBloqueada = false;
     });

@@ -165,14 +165,11 @@
                 <th>Nombre</th>
                 <th>Identificación</th>
                 <th>Correo</th>
-<<<<<<< HEAD
 
                 <!-- Agregado ejercicio:
                      Nueva columna para mostrar el curso del estudiante. -->
                 <th>Curso</th>
 
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
                 <th>Nota</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -184,7 +181,6 @@
                 <td>{{ est.nombre }} {{ est.apellido }}</td>
                 <td>{{ est.identificacion }}</td>
                 <td>{{ est.correo }}</td>
-<<<<<<< HEAD
 
                 <!-- Agregado ejercicio:
                      Muestra el curso guardado del estudiante. -->
@@ -193,12 +189,6 @@
                 <td>{{ est.nota || '-' }}</td>
 
                 <td>
-=======
-                <td>{{ est.nota || '-' }}</td>
-
-                <td>
-                  <!--  estado real seleccionado en el formulario. -->
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
                   <span
                     class="estado-badge"
                     [class.activo]="est.estado === 'activo'"
@@ -214,11 +204,7 @@
               </tr>
 
               <tr *ngIf="estudiantesFiltrados.length === 0">
-<<<<<<< HEAD
                 <td colspan="7" class="sin-datos">No hay estudiantes registrados</td>
-=======
-                <td colspan="6" class="sin-datos">No hay estudiantes registrados</td>
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
               </tr>
             </tbody>
           </table>

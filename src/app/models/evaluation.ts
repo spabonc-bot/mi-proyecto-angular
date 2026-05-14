@@ -7,11 +7,8 @@ export interface EvaluationModel {
   escala: string;
   docente: string;
   preguntas: QuestionModel[];
-<<<<<<< HEAD
   //agregado 
   asignacionTipo: 'estudiante' | 'curso' | '';
   estudianteAsignado: string;
   cursoAsignado: string;
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 }

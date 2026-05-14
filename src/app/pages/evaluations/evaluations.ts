@@ -11,10 +11,7 @@ import { ScaleService } from '../../services/scale.service';
 import { EvaluationModel } from '../../models/evaluation';
 import { TeacherModel } from '../../models/teacher';
 import { ScaleModel } from '../../models/scales';
-<<<<<<< HEAD
 import { COURSES } from '../../data/courses';
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
 @Component({
   selector: 'app-evaluations',
@@ -31,7 +28,6 @@ export class Evaluations implements OnInit {
     cantidad: 0,
     escala: '',
     docente: '',
-<<<<<<< HEAD
     preguntas: [],
 
     // Agregado ejercicio:
@@ -39,15 +35,11 @@ export class Evaluations implements OnInit {
     asignacionTipo: '',
     estudianteAsignado: '',
     cursoAsignado: ''
-=======
-    preguntas: []
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
   };
 
   docentes: TeacherModel[] = [];
   escalas: ScaleModel[] = [];
 
-<<<<<<< HEAD
   // Agregado ejercicio:
 
   estudiantes: any[] = [];
@@ -56,8 +48,6 @@ export class Evaluations implements OnInit {
 
   courses: string[] = COURSES;
 
-=======
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
   constructor(
     private router: Router,
     private evaluationService: EvaluationService,
@@ -68,7 +58,6 @@ export class Evaluations implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.evaluationService.inicializarEvaluacion();
     await this.teacherService.inicializarDatos();
-<<<<<<< HEAD
 
     this.cargarDocentes();
     this.cargarEscalas();
@@ -76,10 +65,6 @@ export class Evaluations implements OnInit {
     // Agregado ejercicio:
   
     this.cargarEstudiantes();
-=======
-    this.cargarDocentes();
-    this.cargarEscalas();
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
   }
 
   cargarDocentes(): void {
@@ -94,7 +79,6 @@ export class Evaluations implements OnInit {
     }
   }
 
-<<<<<<< HEAD
   // Agregado ejercicio:
   cargarEstudiantes(): void {
     this.estudiantes = JSON.parse(localStorage.getItem('estudiantes') || '[]');
@@ -116,15 +100,6 @@ export class Evaluations implements OnInit {
     e.docente = e.docente.trim();
     e.estudianteAsignado = e.estudianteAsignado.trim();
     e.cursoAsignado = e.cursoAsignado.trim();
-=======
-  validarFormulario(): string | null {
-    const e = this.evaluacion;
-
-    // Corrección: limpia espacios antes de validar y guardar.
-    e.nombre = e.nombre.trim();
-    e.escala = e.escala.trim();
-    e.docente = e.docente.trim();
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
 
     const reglas = [
       () => !e.nombre && 'Ingrese el nombre de la evaluación',
@@ -138,7 +113,6 @@ export class Evaluations implements OnInit {
       },
 
       () => !e.escala && 'Seleccione una escala',
-<<<<<<< HEAD
 
       () => !e.docente && 'Seleccione un docente',
 
@@ -171,12 +145,6 @@ export class Evaluations implements OnInit {
       () => {
         // Corrección:
         // Evita crear evaluaciones con el mismo nombre.
-=======
-      () => !e.docente && 'Seleccione un docente',
-
-      () => {
-        // Corrección: evita crear evaluaciones con el mismo nombre
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
         const evaluaciones = this.evaluationService.getEvaluaciones();
 
         const existe = evaluaciones.some((ev: EvaluationModel) =>
@@ -187,12 +155,8 @@ export class Evaluations implements OnInit {
       }
     ];
 
-<<<<<<< HEAD
     // Mejora:
     // Muestra solo el primer error, no todos juntos.
-=======
-    // Mejora: muestra solo el primer error  no  juntos.
->>>>>>> d0b5683ecefeaa510c81442014441b2d06f7acaa
     for (const regla of reglas) {
       const error = regla();
       if (error) return error;
