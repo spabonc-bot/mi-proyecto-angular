@@ -1,0 +1,178 @@
+<div class="contenedor-examen">
+
+  <div class="cabecera-examen cabecera-bienvenida">
+    <div>
+      <h2>Sistema de Evaluación</h2>
+      <p class="saludo"><strong>Bienvenido:</strong> {{ nombreUsuario }}</p>
+    </div>
+
+    <button class="btn-salir-header" (click)="confirmarCerrarSesion()">
+      Cerrar sesión
+    </button>
+  </div>
+
+  <div *ngIf="!evaluacion">
+
+    <div class="cabecera-examen">
+      <h2>Seleccionar evaluación</h2>
+      <p>Elige la evaluación que deseas presentar</p>
+    </div>
+
+    <div *ngIf="evaluacionesDisponibles.length > 0; else vacio" class="lista-evaluaciones">
+      <div class="tarjeta-evaluacion" *ngFor="let e of evaluacionesDisponibles">
+        <h3>{{ e.nombre }}</h3>
+
+        <div class="info-tarjeta">
+          <p><strong>Docente:</strong> {{ e.docente }}</p>
+          <p><strong>Tipo:</strong> {{ e.tipo }}</p>
+          <p><strong>Escala:</strong> {{ e.escala }}</p>
+          <p><strong>Preguntas:</strong> {{ e.preguntas?.length || 0 }}</p>
+        </div>
+
+        <button
+          class="btn-enviar"
+          type="button"
+          [disabled]="yaPresentoEvaluacion(e)"
+          (click)="seleccionarEvaluacion(e)">
+          {{ yaPresentoEvaluacion(e) ? 'Ya presentado' : 'Presentar evaluación' }}
+        </button>
+      </div>
+    </div>
+
+    <ng-template #vacio>
+      <div class="pregunta-box vacio-box">
+        <h3>No hay evaluaciones disponibles</h3>
+        <p>Aún no hay evaluaciones con preguntas registradas.</p>
+      </div>
+    </ng-template>
+
+  </div>
+
+  <div *ngIf="evaluacion">
+
+    <div class="cabecera-examen">
+      <h2>{{ evaluacion.nombre }}</h2>
+
+      <div class="info-evaluacion">
+        <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
+        <p><strong>Tipo:</strong> {{ evaluacion.tipo }}</p>
+        <p><strong>Escala:</strong> {{ evaluacion.escala }}</p>
+        <p><strong>Preguntas:</strong> {{ evaluacion.preguntas?.length || 0 }}</p>
+      </div>
+    </div>
+
+    <div class="temporizador-box">
+      <p>
+        <strong>Pregunta:</strong>
+        {{ preguntaActual + 1 }} / {{ evaluacion.preguntas.length }}
+      </p>
+
+      <p *ngIf="tiempoRestante() !== null">
+        <strong>Tiempo restante:</strong>
+        {{ tiempoRestante() }} segundos
+      </p>
+
+      <p *ngIf="tiempoRestante() === null">
+        <strong>Tiempo:</strong>
+        Sin límite de tiempo
+      </p>
+    </div>
+
+    <div class="pregunta-box" *ngIf="evaluacion.preguntas[preguntaActual] as p">
+      <h3>{{ preguntaActual + 1 }}. {{ p.enunciado }}</h3>
+
+      <div *ngIf="evaluacion.tipo === 'multiple'" class="opciones">
+        <label class="opcion-item">
+          <input
+            type="radio"
+            [name]="'pregunta' + preguntaActual"
+            [checked]="respuestas[preguntaActual] === 'A'"
+            (change)="responder(preguntaActual, 'A')">
+          <span>A. {{ p.opcionA }}</span>
+        </label>
+
+        <label class="opcion-item">
+          <input
+            type="radio"
+            [name]="'pregunta' + preguntaActual"
+            [checked]="respuestas[preguntaActual] === 'B'"
+            (change)="responder(preguntaActual, 'B')">
+          <span>B. {{ p.opcionB }}</span>
+        </label>
+
+        <label class="opcion-item">
+          <input
+            type="radio"
+            [name]="'pregunta' + preguntaActual"
+            [checked]="respuestas[preguntaActual] === 'C'"
+            (change)="responder(preguntaActual, 'C')">
+          <span>C. {{ p.opcionC }}</span>
+        </label>
+
+        <label class="opcion-item">
+          <input
+            type="radio"
+            [name]="'pregunta' + preguntaActual"
+            [checked]="respuestas[preguntaActual] === 'D'"
+            (change)="responder(preguntaActual, 'D')">
+          <span>D. {{ p.opcionD }}</span>
+        </label>
+      </div>
+
+      <div *ngIf="evaluacion.tipo === 'vf'" class="opciones">
+        <label class="opcion-item">
+          <input
+            type="radio"
+            [name]="'pregunta' + preguntaActual"
+            [checked]="respuestas[preguntaActual] === 'V'"
+            (change)="responder(preguntaActual, 'V')">
+          <span>Verdadero</span>
+        </label>
+
+        <label class="opcion-item">
+          <input
+            type="radio"
+            [name]="'pregunta' + preguntaActual"
+            [checked]="respuestas[preguntaActual] === 'F'"
+            (change)="responder(preguntaActual, 'F')">
+          <span>Falso</span>
+        </label>
+      </div>
+
+      <div *ngIf="evaluacion.tipo === 'abierta'">
+        <input
+          type="text"
+          class="entrada"
+          placeholder="Escriba su respuesta"
+          [value]="respuestas[preguntaActual]"
+          (input)="responder(preguntaActual, $any($event.target).value)">
+      </div>
+    </div>
+
+    <div class="acciones-examen">
+
+      <button
+        class="btn-enviar"
+        type="button"
+        *ngIf="preguntaActual < evaluacion.preguntas.length - 1"
+        (click)="siguientePregunta()">
+        Siguiente pregunta
+      </button>
+
+      <button
+        class="btn-enviar"
+        type="button"
+        *ngIf="preguntaActual === evaluacion.preguntas.length - 1"
+        (click)="finalizarExamen()">
+        Enviar examen
+      </button>
+
+      <button class="btn-volver" type="button" (click)="confirmarAbandonarExamen()">
+        Abandonar examen
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

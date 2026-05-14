@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+
+.contenedor-pagina {
+  display: flex;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+.menu-lateral {
+  width: 220px;
+  background: #1c2d4f;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.menu-navegacion ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.item-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  color: #b8c8e0;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.item-menu:hover {
+  background: #263d63;
+  color: white;
+}
+
+.item-menu.activo {
+  color: white;
+  outline: 2px solid #7a5af8;
+}
+
+.footer-menu {
+  background: #152240;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #b8c8e0;
+  cursor: pointer;
+}
+
+.footer-menu:hover {
+  background: #1e2f4f;
+  color: white;
+}
+
+
+.contenedor-principal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.barra-superior {
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 35px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.iconos-barra {
+  display: flex;
+  gap: 18px;
+  font-size: 22px;
+  color: #1c2d4f;
+}
+
+
+.titulo-sistema {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1c2d4f;
+}
+
+
+
+
+.area-contenido {
+  flex: 1;
+  background: #e8e8e8;
+  padding: 35px;
+  overflow-y: auto;
+}
+
+
+.tarjeta-formulario,
+.tarjeta-lista,
+.tarjeta-info-evaluacion {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+
+.tarjeta-info-evaluacion {
+  border-left: 5px solid #7a5af8;
+}
+
+
+.entrada {
+  width: 100%;
+  height: 42px;
+  border-radius: 7px;
+  border: none;
+  background: #dde1ea;
+  padding: 0 12px;
+  margin-bottom: 10px;
+  transition: 0.2s;
+}
+
+.entrada:focus {
+  background: white;
+  outline: 2px solid #7a5af8;
+  transform: scale(1.01);
+}
+
+
+.boton {
+  padding: 12px 30px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.guardar {
+  background: #2ecc71;
+  color: white;
+}
+
+.guardar:hover {
+  background: #27ae60;
+  transform: scale(1.04);
+}
+
+
+.tabla-preguntas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-preguntas th {
+  background: #1c2d4f;
+  color: white;
+  padding: 12px;
+}
+
+.tabla-preguntas td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+
+.tabla-preguntas th,
+.tabla-preguntas td {
+  text-align: center;
+}
+
+
+.tabla-preguntas td:nth-child(2) {
+  text-align: left;
+  max-width: 350px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+
+.tabla-preguntas tr:hover {
+  background: #eef2ff;
+}
+
+
+.badge-respuesta {
+  background: #7a5af8;
+  color: white;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.acciones i {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.acciones i:hover {
+  transform: scale(1.2);
+}
+
+.fa-edit:hover {
+  color: #2ecc71;
+}
+
+.fa-trash:hover {
+  color: #e74c3c;
+}
+
+
+.mensaje-vacio {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 10px;
+  color: #999;
+  border: 2px dashed #ddd;
+}
+
+.mensaje-vacio i {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+
+@media (max-width: 768px) {
+
+  .menu-lateral {
+    width: 80px;
+  }
+
+  .item-menu span,
+  .footer-menu span {
+    display: none;
+  }
+
+  .entrada {
+    font-size: 13px;
+  }
+
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.acciones i {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.acciones i:hover {
+  transform: scale(1.2);
+}
+
+.fa-eye:hover {
+  color: #3498db;
+}
+.mensaje-completo {
+  margin-top: 12px;
+  background: #d4edda;
+  color: #155724;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.acciones-finalizar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.finalizar {
+  background: #1c2d4f;
+  color: white;
+}
+
+.finalizar:hover {
+  background: #152240;
+  transform: scale(1.04);
+}
+
+.boton:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+input[type="number"].entrada {
+  font-weight: 600;
+}
+.opcion-tiempo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f4f6fb;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  color: #1c2d4f;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.opcion-tiempo input {
+  transform: scale(1.1);
+}
