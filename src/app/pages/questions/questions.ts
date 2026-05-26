@@ -26,16 +26,27 @@ export class Questions implements OnInit {
     opcionC: '',
     opcionD: '',
     respuesta: '',
-
-    
     tiempo: null
   };
 
   listaPreguntas: QuestionModel[] = [];
   editandoIndex: number = -1;
 
-
   usarTiempoPregunta: boolean = false;
+
+  // Agregado ejercicio:
+  // Tema que el docente escribe para que la IA genere preguntas.
+  temaIA: string = '';
+
+  // Agregado ejercicio:
+  
+  cantidadIA: number = 1;
+
+  
+  generandoIA: boolean = false;
+
+  
+  preguntasGeneradasIA: QuestionModel[] = [];
 
   constructor(
     private router: Router,
@@ -63,7 +74,6 @@ export class Questions implements OnInit {
 
     this.evaluacion = data;
 
-   
     this.listaPreguntas = [...(data.preguntas || [])].map((p: any) => ({
       enunciado: p.enunciado || '',
       opcionA: p.opcionA || '',
@@ -77,6 +87,10 @@ export class Questions implements OnInit {
           : Number(p.tiempo)
     }));
 
+    // Agregado ejercicio:
+    // Ajusta la cantidad de preguntas para IA según las preguntas faltantes.
+    this.sincronizarCantidadIA();
+
     this.cd.detectChanges();
   }
 
@@ -88,15 +102,228 @@ export class Questions implements OnInit {
     return this.listaPreguntas.length === this.totalPreguntas;
   }
 
-  cambiarUsoTiempo(activo: boolean): void {
+  // Agregado ejercicio:
+  // Calcula cuántas preguntas faltan por registrar.
+  get preguntasRestantes(): number {
+    const restantes = this.totalPreguntas - this.listaPreguntas.length;
+    return restantes > 0 ? restantes : 0;
+  }
 
-    // Si el docente activa el tiempo, aparece el campo vacío.
-    // Si lo desactiva, la pregunta queda sin límite de tiempo.
+
+  sincronizarCantidadIA(): void {
+    if (this.preguntasRestantes <= 0) {
+      this.cantidadIA = 0;
+      return;
+    }
+
+    if (!this.cantidadIA || this.cantidadIA <= 0) {
+      this.cantidadIA = this.preguntasRestantes;
+      return;
+    }
+
+    if (this.cantidadIA > this.preguntasRestantes) {
+      this.cantidadIA = this.preguntasRestantes;
+    }
+  }
+
+  cambiarUsoTiempo(activo: boolean): void {
     this.usarTiempoPregunta = activo;
 
     if (!activo) {
       this.pregunta.tiempo = null;
     }
+  }
+
+  // Agregado ejercicio:
+  // Obtiene la URL correcta de la función IA.
+  // En producción o netlify dev usa la ruta normal.
+  // Si Angular corre con ng serve en localhost:4200,
+  // llama la función de Netlify en localhost:8888.
+  obtenerUrlIA(): string {
+    const host = window.location.hostname;
+    const port = window.location.port;
+
+    if (host === 'localhost' && port === '4200') {
+      return 'http://localhost:8888/.netlify/functions/generate-questions';
+    }
+
+    return '/.netlify/functions/generate-questions';
+  }
+
+  // Agregado ejercicio:
+  // Envía el tema, tipo y cantidad a la función de Netlify.
+  // La función llama a la IA y devuelve preguntas sugeridas.
+  async generarPreguntasIA(): Promise<void> {
+    this.sincronizarCantidadIA();
+
+    if (this.preguntasCompletas || this.preguntasRestantes <= 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Preguntas completas',
+        text: 'Ya completaste la cantidad de preguntas configuradas para esta evaluación.'
+      });
+      return;
+    }
+
+    if (!this.temaIA.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Tema requerido',
+        text: 'Ingrese un tema para generar preguntas con IA.'
+      });
+      return;
+    }
+
+    if (!this.cantidadIA || this.cantidadIA <= 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Cantidad inválida',
+        text: 'Ingrese una cantidad válida de preguntas.'
+      });
+      return;
+    }
+
+    if (this.cantidadIA > this.preguntasRestantes) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Cantidad no permitida',
+        text: `Solo faltan ${this.preguntasRestantes} pregunta(s) por registrar.`
+      });
+
+      this.cantidadIA = this.preguntasRestantes;
+      return;
+    }
+
+    this.generandoIA = true;
+    this.preguntasGeneradasIA = [];
+
+    try {
+      const respuesta = await fetch(this.obtenerUrlIA(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          tema: this.temaIA,
+          tipo: this.evaluacion.tipo,
+          cantidad: this.cantidadIA
+        })
+      });
+
+      const data = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(data.error || 'No se pudieron generar preguntas con IA');
+      }
+
+      const textoGenerado = String(data.preguntas || '');
+
+      this.preguntasGeneradasIA = this.convertirTextoIAaPreguntas(textoGenerado)
+        .slice(0, this.preguntasRestantes);
+
+      if (this.preguntasGeneradasIA.length === 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Sin preguntas válidas',
+          text: 'La IA respondió, pero no se pudo convertir la respuesta en preguntas válidas.'
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Preguntas generadas',
+        text: 'La IA generó preguntas sugeridas. Revísalas antes de usarlas.',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error con IA',
+        text: String(error)
+      });
+    } finally {
+      this.generandoIA = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  
+  convertirTextoIAaPreguntas(texto: string): QuestionModel[] {
+    try {
+      let limpio = texto
+        .replace(/```json/gi, '')
+        .replace(/```/g, '')
+        .trim();
+
+      const inicio = limpio.indexOf('[');
+      const fin = limpio.lastIndexOf(']');
+
+      if (inicio !== -1 && fin !== -1) {
+        limpio = limpio.substring(inicio, fin + 1);
+      }
+
+      const datos = JSON.parse(limpio);
+
+      if (!Array.isArray(datos)) {
+        return [];
+      }
+
+      return datos.map((p: any) => ({
+        enunciado: String(p.enunciado || '').trim(),
+        opcionA: String(p.opcionA || '').trim(),
+        opcionB: String(p.opcionB || '').trim(),
+        opcionC: String(p.opcionC || '').trim(),
+        opcionD: String(p.opcionD || '').trim(),
+        respuesta: String(p.respuesta || '').trim().toUpperCase(),
+        tiempo: null
+      }));
+
+    } catch (error) {
+      console.error('Error convirtiendo respuesta IA:', error);
+      return [];
+    }
+  }
+
+
+  usarPreguntaGenerada(preguntaIA: QuestionModel): void {
+    if (this.preguntasCompletas) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Límite alcanzado',
+        text: 'Ya completaste todas las preguntas de esta evaluación.'
+      });
+      return;
+    }
+
+    this.pregunta = {
+      enunciado: preguntaIA.enunciado || '',
+      opcionA: preguntaIA.opcionA || '',
+      opcionB: preguntaIA.opcionB || '',
+      opcionC: preguntaIA.opcionC || '',
+      opcionD: preguntaIA.opcionD || '',
+      respuesta: preguntaIA.respuesta || '',
+      tiempo: null
+    };
+
+    this.usarTiempoPregunta = false;
+    this.editandoIndex = -1;
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Pregunta copiada',
+      text: 'La pregunta fue copiada al formulario. Revísala y presiona Guardar pregunta.',
+      timer: 1600,
+      showConfirmButton: false
+    });
+  }
+
+  // Agregado ejercicio:
+  // Limpia las preguntas sugeridas por IA.
+  limpiarPreguntasIA(): void {
+    this.preguntasGeneradasIA = [];
   }
 
   guardarPregunta(): void {
@@ -132,11 +359,13 @@ export class Questions implements OnInit {
       this.mostrarExito('Pregunta guardada correctamente');
     }
 
-    
     this.listaPreguntas = [...this.listaPreguntas];
 
     this.guardarEnStorage();
     this.limpiarFormulario();
+
+    
+    this.sincronizarCantidadIA();
 
     this.cd.detectChanges();
   }
@@ -145,14 +374,12 @@ export class Questions implements OnInit {
     const p = this.pregunta;
     const tipo = this.evaluacion.tipo;
 
-    // Limpia espacios antes de validar y guardar.
     p.enunciado = p.enunciado.trim();
     p.opcionA = (p.opcionA || '').trim();
     p.opcionB = (p.opcionB || '').trim();
     p.opcionC = (p.opcionC || '').trim();
     p.opcionD = (p.opcionD || '').trim();
     p.respuesta = p.respuesta.trim().toUpperCase();
-
 
     const tiempo = Number(p.tiempo);
     const tiempoVacio = p.tiempo === null;
@@ -214,7 +441,6 @@ export class Questions implements OnInit {
       .map(regla => regla())
       .filter(mensaje => mensaje) as string[];
 
-  
     if (errores.length === 0) {
       p.tiempo = this.usarTiempoPregunta ? tiempo : null;
     }
@@ -235,8 +461,6 @@ export class Questions implements OnInit {
       opcionC: '',
       opcionD: '',
       respuesta: '',
-
-
       tiempo: null
     };
 
@@ -255,7 +479,6 @@ export class Questions implements OnInit {
           : Number(preguntaSeleccionada.tiempo)
     };
 
-    
     this.usarTiempoPregunta = this.pregunta.tiempo !== null;
 
     this.editandoIndex = index;
@@ -279,6 +502,9 @@ export class Questions implements OnInit {
       if (this.editandoIndex === index) {
         this.limpiarFormulario();
       }
+
+ 
+      this.sincronizarCantidadIA();
 
       this.cd.detectChanges();
 

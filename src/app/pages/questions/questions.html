@@ -50,10 +50,94 @@
         <p><strong>Docente:</strong> {{ evaluacion.docente }}</p>
         <p><strong>Tipo:</strong> {{ evaluacion.tipo }}</p>
         <p><strong>Preguntas registradas:</strong> {{ listaPreguntas.length }} / {{ totalPreguntas }}</p>
+        <p><strong>Preguntas faltantes:</strong> {{ preguntasRestantes }}</p>
 
         <div *ngIf="preguntasCompletas" class="mensaje-completo">
           Ya completaste todas las preguntas. Puedes Guardar la evaluación.
         </div>
+      </div>
+
+      <!-- Agregado ejercicio: IA para generar preguntas sugeridas. -->
+      <div class="tarjeta-formulario" *ngIf="evaluacion">
+
+        <h3>Generador de preguntas con IA</h3>
+
+        <p>
+          Escribe un tema y la IA generará preguntas sugeridas según el tipo de evaluación.
+          La cantidad máxima depende de las preguntas que faltan por registrar.
+        </p>
+
+        <input
+          [(ngModel)]="temaIA"
+          placeholder="Tema para generar preguntas. Ejemplo: Angular básico"
+          class="entrada">
+
+        <label class="opcion-tiempo">
+          Preguntas a generar. Faltan {{ preguntasRestantes }} por registrar.
+        </label>
+
+        <input
+          type="number"
+          min="1"
+          [max]="preguntasRestantes"
+          [(ngModel)]="cantidadIA"
+          placeholder="Cantidad de preguntas a generar"
+          class="entrada">
+
+        <button
+          class="boton guardar"
+          type="button"
+          (click)="generarPreguntasIA()"
+          [disabled]="generandoIA || preguntasCompletas || preguntasRestantes === 0">
+          {{ generandoIA ? 'Generando...' : 'Generar preguntas con IA' }}
+        </button>
+
+        <button
+          class="boton cancelar"
+          type="button"
+          *ngIf="preguntasGeneradasIA.length > 0"
+          (click)="limpiarPreguntasIA()">
+          Limpiar sugerencias
+        </button>
+
+        <div *ngIf="generandoIA" class="mensaje-completo">
+          Generando preguntas, por favor espera...
+        </div>
+
+        <div *ngIf="preguntasRestantes === 0" class="mensaje-completo">
+          Ya completaste todas las preguntas de esta evaluación.
+        </div>
+
+        <div class="tarjeta-lista" *ngIf="preguntasGeneradasIA.length > 0">
+          <h3>Preguntas sugeridas por IA</h3>
+
+          <div *ngFor="let p of preguntasGeneradasIA; let i = index" class="tarjeta-formulario">
+
+            <h4>{{ i + 1 }}. {{ p.enunciado }}</h4>
+
+            <div *ngIf="evaluacion.tipo === 'multiple'">
+              <p><strong>A:</strong> {{ p.opcionA }}</p>
+              <p><strong>B:</strong> {{ p.opcionB }}</p>
+              <p><strong>C:</strong> {{ p.opcionC }}</p>
+              <p><strong>D:</strong> {{ p.opcionD }}</p>
+            </div>
+
+            <p>
+              <strong>Respuesta sugerida:</strong>
+              <span class="badge-respuesta">{{ p.respuesta }}</span>
+            </p>
+
+            <button
+              class="boton guardar"
+              type="button"
+              (click)="usarPreguntaGenerada(p)"
+              [disabled]="preguntasCompletas">
+              Usar en formulario
+            </button>
+
+          </div>
+        </div>
+
       </div>
 
       <div class="tarjeta-formulario">
