@@ -6,6 +6,6 @@ margin:0;
 font-family:'Poppins', sans-serif;
 background:#f4f6f9;
 }
-.barra-superior {
-  justify-content: flex-start !important;
+.iconos-barra {
+  display: none !important;
 }
